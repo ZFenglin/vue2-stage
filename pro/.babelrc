@@ -1,0 +1,6 @@
+{
+    // 预设，进行代码转译
+    "presets": [
+        "@babel/preset-env"
+    ]
+}
