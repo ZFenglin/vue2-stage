@@ -18,12 +18,11 @@
             el: '#app',
             data() {
                 return {
-                    name: [1, 2, 3]
+                    arr: [{ a: 1 }, { b: 2 }],
                 }
             },
         })
-
-        console.log(vm)
+        vm.arr[0].a = 2
     </script>
 </body>
 

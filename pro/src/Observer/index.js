@@ -1,4 +1,5 @@
 import { isObject } from "../utils";
+import { arrayMethods } from "./array";
 // 响应式就是给所有属性套层外壳
 
 /**
@@ -6,10 +7,31 @@ import { isObject } from "../utils";
  * 使用class可以添加类型，方便检查
  */
 class Observer {
-    constructor(data) { // 对对象中的所有属性进行劫持
-        this.walk(data)
+    constructor(data) {
+        Object.defineProperty(data, '__ob__', {
+            value: this,    // 所有被劫持的属性都具有__ob__属性，这个属性是一个Observer实例
+            enumerable: false, // 设置为false，不可枚举，注意循环引用的时候，不能被遍历到
+        })
+        if (Array.isArray(data)) {
+            // 数组劫持处理
+            // 对数组方法进行改写 切片编程 高阶函数
+            data.__proto__ = arrayMethods
+            // 如果数组中数据是对象, 那么也要进行监测
+            this.observeArray(data)
+        } else {
+            // 对象劫持处理
+            this.walk(data)
+        }
     }
-    walk(data) { // 对象
+    // 数组中数组和对象劫持
+    // 虽然数组没监听索引，但是其中的对象会进行处理，可以使用Object.freeze() 冻结对象
+    observeArray(data) {
+        data.forEach(item => {
+            observe(item)
+        })
+    }
+    // 对象劫持
+    walk(data) {
         Object.keys(data).forEach(key => {
             defineReactive(data, key, data[key])
         })
@@ -21,9 +43,11 @@ function defineReactive(data, key, value) {
     observe(value) // 对象套对象，则需要遍历（性能差）
     Object.defineProperty(data, key, {
         get() {
+            console.log('get:' + key)
             return value
         },
         set(newVal) {
+            console.log('set:' + key)
             observe(newVal);// 当用户设置新对象，则对这个对象进劫持
             value = newVal
         }
@@ -33,6 +57,10 @@ function defineReactive(data, key, value) {
 export function observe(data) {
     // 如果是对象才观测
     if (!isObject(data)) {
+        return
+    }
+    // 如果已经被劫持过了，就不再劫持
+    if (data.__ob__) {
         return
     }
     // 默认最外层的data必须是个对象

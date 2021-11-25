@@ -43,7 +43,7 @@ function proxy(vm, source, key) {
  * data数据初始化
  * @param {*} vm 
  */
-function initData(vm) {
+function initData(vm) { // vm.$el  vue内部会对属性进行检测，若是以$开头，则不进行代理
     let data = vm.$options.data
     // vue2会将data的所有数据进行劫持 Object.defineProperty
     data = vm._data = isFunction(data) ? data.call(vm) : data // 此时，vm和data无关，添加_data处理

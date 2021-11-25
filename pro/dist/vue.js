@@ -62,6 +62,43 @@
     return _typeof(val) === 'object' && val !== null;
   }
 
+  var oldArrayPrototype = Array.prototype;
+  var arrayMethods = Object.create(oldArrayPrototype); // arrayMethods.__proto__ = Array.prototype 继承获取属性方法
+
+  var methods = ['push', 'pop', 'shift', 'unshift', 'reverse', 'sort', 'splice'];
+  methods.forEach(function (method) {
+    // 用户调用时，如果用以上的方法，则用重写的，否则用原生的
+    arrayMethods[method] = function () {
+      console.log('数组变化了');
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      oldArrayPrototype[method].apply(this, args); // 执行原生的方法
+      // arr.push({a: 1},{a: 2},{a: 3}) push对象也需要处理，则方法中需要对新增对象进行劫持
+
+      var inserted; // 新增的对象
+
+      var ob = this.__ob__; // 获取当前数组的Observer实例，为了后面使用observeArray方法
+
+      switch (method) {
+        case 'push':
+        case 'unshift':
+          inserted = args;
+          break;
+
+        case 'splice':
+          inserted = args.slice(2); // 只取splice中的新增对象
+
+          break;
+      } // 如果有新增对象，则需要对新增的对象进行劫持，需要观测数组每一项，而不是数组本身
+
+
+      if (inserted) ob.observeArray(inserted);
+    };
+  });
+
   /**
    * 监测数据
    * 使用class可以添加类型，方便检查
@@ -71,14 +108,38 @@
     function Observer(data) {
       _classCallCheck(this, Observer);
 
-      // 对对象中的所有属性进行劫持
-      this.walk(data);
-    }
+      Object.defineProperty(data, '__ob__', {
+        value: this,
+        // 所有被劫持的属性都具有__ob__属性，这个属性是一个Observer实例
+        enumerable: false // 设置为false，不可枚举，注意循环引用的时候，不能被遍历到
+
+      });
+
+      if (Array.isArray(data)) {
+        // 数组劫持处理
+        // 对数组方法进行改写 切片编程 高阶函数
+        data.__proto__ = arrayMethods; // 如果数组中数据是对象, 那么也要进行监测
+
+        this.observeArray(data);
+      } else {
+        // 对象劫持处理
+        this.walk(data);
+      }
+    } // 数组中数组和对象劫持
+    // 虽然数组没监听索引，但是其中的对象会进行处理，可以使用Object.freeze() 冻结对象
+
 
     _createClass(Observer, [{
+      key: "observeArray",
+      value: function observeArray(data) {
+        data.forEach(function (item) {
+          observe(item);
+        });
+      } // 对象劫持
+
+    }, {
       key: "walk",
       value: function walk(data) {
-        // 对象
         Object.keys(data).forEach(function (key) {
           defineReactive(data, key, data[key]);
         });
@@ -94,9 +155,11 @@
 
     Object.defineProperty(data, key, {
       get: function get() {
+        console.log('get:' + key);
         return value;
       },
       set: function set(newVal) {
+        console.log('set:' + key);
         observe(newVal); // 当用户设置新对象，则对这个对象进劫持
 
         value = newVal;
@@ -107,6 +170,11 @@
   function observe(data) {
     // 如果是对象才观测
     if (!isObject(data)) {
+      return;
+    } // 如果已经被劫持过了，就不再劫持
+
+
+    if (data.__ob__) {
       return;
     } // 默认最外层的data必须是个对象
 
@@ -158,6 +226,7 @@
 
 
   function initData(vm) {
+    // vm.$el  vue内部会对属性进行检测，若是以$开头，则不进行代理
     var data = vm.$options.data; // vue2会将data的所有数据进行劫持 Object.defineProperty
 
     data = vm._data = isFunction(data) ? data.call(vm) : data; // 此时，vm和data无关，添加_data处理
