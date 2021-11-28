@@ -28,6 +28,7 @@ methods.forEach(method => {
                 inserted = args.slice(2) // 只取splice中的新增对象
                 break
         }
+        // TODO 更新视图
         // 如果有新增对象，则需要对新增的对象进行劫持，需要观测数组每一项，而不是数组本身
         if (inserted) ob.observeArray(inserted)
     }

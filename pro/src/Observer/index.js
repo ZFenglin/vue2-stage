@@ -47,6 +47,7 @@ function defineReactive(data, key, value) {
             return value
         },
         set(newVal) {
+            // TODO 更新视图
             console.log('set:' + key)
             observe(newVal);// 当用户设置新对象，则对这个对象进劫持
             value = newVal
