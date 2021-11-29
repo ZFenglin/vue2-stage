@@ -31,9 +31,8 @@ export function initMixin(Vue) {
             let template = options.template
             if (!template && el) { // 用户没有传入template，则从el中获取
                 template = el.outerHTML // 火狐不支持outerHTML
-                let render = compileToFunctions(template)
-                options.render = render
             }
+            options.render = compileToFunctions(template)
         }
     }
 }
