@@ -1,3 +1,3 @@
-export function compileToFunctions(template) {
+export function compileToFunction(template) {
     console.log(template)
 }

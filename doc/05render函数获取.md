@@ -29,7 +29,7 @@ export function initMixin(Vue) {
             if (!template && el) { // 用户没有传入template，则从el中获取
                 template = el.outerHTML // 火狐不支持outerHTML
             }
-            options.render = compileToFunctions(template)
+            options.render = compileToFunction(template)
         }
     }
 }
