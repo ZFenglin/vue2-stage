@@ -43,12 +43,10 @@ function defineReactive(data, key, value) {
     observe(value) // 对象套对象，则需要遍历（性能差）
     Object.defineProperty(data, key, {
         get() {
-            console.log('get:' + key)
             return value
         },
         set(newVal) {
             // TODO 更新视图
-            console.log('set:' + key)
             observe(newVal);// 当用户设置新对象，则对这个对象进劫持
             value = newVal
         }
