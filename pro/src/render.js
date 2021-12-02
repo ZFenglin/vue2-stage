@@ -1,7 +1,7 @@
 import { createElement, createTextElement } from "./vdom/index"
 
 export function renderMixin(Vue) {
-    Vue.prototype._c = function (tag, data, ...children) { // 创建元素 createElement
+    Vue.prototype._c = function (tag, data, children) { // 创建元素 createElement
         return createElement(this, tag, data, children)
     }
     Vue.prototype._v = function (text) { // 创建文本节点 createTextElement

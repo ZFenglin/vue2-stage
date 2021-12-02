@@ -26,7 +26,7 @@ export function initMixin(Vue) {
         const vm = this
         const options = vm.$options
         el = document.querySelector(el)
-
+        vm.$el = el // 实例的$el属性指向真实dom，用于后续更新
         // 获取render函数
         if (!options.render) { // 没有render用template
             let template = options.template

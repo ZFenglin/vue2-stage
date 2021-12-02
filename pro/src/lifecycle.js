@@ -1,7 +1,11 @@
+import { patch } from "./vdom/patch"
+
 export function lifecycleMixin(Vue) {
     // 定义生命周期函数
     Vue.prototype._update = function (vnode) {
-        console.log('_update 处理元素更新挂载', vnode);
+        // 既有初始化，也有更新
+        const vm = this
+        patch(vm.$el, vnode)
     }
 }
 
