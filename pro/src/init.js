@@ -4,6 +4,7 @@
  */
 
 import { compileToFunction } from "./Compiler/index"
+import { mountComponent } from "./lifecycle"
 import { initState } from "./state"
 
 // Vue的基础上做一次混合操作
@@ -34,6 +35,8 @@ export function initMixin(Vue) {
             }
             options.render = compileToFunction(template)
         }
+        // 将vm挂载到el上
+        mountComponent(vm, el)
     }
 }
 

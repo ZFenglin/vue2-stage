@@ -1,4 +1,6 @@
 import { initMixin } from "./init"
+import { lifecycleMixin } from "./lifecycle"
+import { renderMixin } from "./render"
 
 // 构造函数模拟class
 function Vue(options) {
@@ -8,5 +10,7 @@ function Vue(options) {
 
 // Vue原型扩展
 initMixin(Vue)
+renderMixin(Vue) // _render方法
+lifecycleMixin(Vue) // _update方法
 
 export default Vue

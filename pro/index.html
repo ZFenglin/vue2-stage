@@ -10,11 +10,7 @@
 
 <body>
     <div id="app" a="1" style="color: blue;">
-        <ul>
-            <li>hello {{name}}</li>
-            <li>{{name2}} world</li>
-            <li>hello {{name3}} world</li>
-        </ul>
+        <p b="2">hello {{name}}</p>
     </div>
     <script src="./dist/vue.js"></script>
     <script>
@@ -24,11 +20,10 @@
             el: '#app',
             data() {
                 return {
-                    arr: [{ a: 1 }, { b: 2 }],
+                    name: 'zfl',
                 }
             },
         })
-        vm.arr[0].a = 2
     </script>
 </body>
 

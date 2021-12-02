@@ -149,3 +149,11 @@ export function parserHTML(html) { // <div id='app'>123</div>
     }
     return root
 }
+
+// 看用户是否传入了模板， 没有可能是template,template如果也没有 则我们将html => 词法解析(开始标签，结束标签，属性，文本) => ast 用来描述html语法的 => 模板
+
+//  <div id='app'>123</div> == codegen ==> _c('div', {id: 'app'}, _v('123')) => 让字符串执行
+
+// 字符串转化为代码
+// eval 耗性能，作用域有问题 不建议使用
+// 模板引擎 new Function + with 来实现
