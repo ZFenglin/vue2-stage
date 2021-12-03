@@ -10,20 +10,29 @@
 
 <body>
     <div id="app" a="1" style="color: blue;">
-        <p b="2">hello {{name}}</p>
+        <p b="2">hello {{name}} world {{name}}</p>
     </div>
     <script src="./dist/vue.js"></script>
     <script>
         // viewModel 数据模型
         // 典型的MVVM view vm model
         let vm = new Vue({
-            el: '#app',
             data() {
                 return {
                     name: 'zfl',
                 }
             },
         })
+        vm.$mount('#app')
+
+        setTimeout(() => {
+            // 数据变化需要影响视图
+            // 多次变化会造成多次触发
+            vm.name = 'zfl2'
+            vm.name = 'zfl3'
+            vm.name = 'zfl4'
+            // 重新调用render产生新的视图，目前每diff
+        }, 2000);
     </script>
 </body>
 

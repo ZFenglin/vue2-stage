@@ -1,5 +1,6 @@
 import { isObject } from "../utils";
 import { arrayMethods } from "./array";
+import Dep from "./dep";
 // 响应式就是给所有属性套层外壳
 
 /**
@@ -41,14 +42,23 @@ class Observer {
 // vue2会对对象进行遍历，对每个属性重新定义，性能差
 function defineReactive(data, key, value) {
     observe(value) // 对象套对象，则需要遍历（性能差）
+    // 属性创建自己的dep
+    let dep = new Dep()
     Object.defineProperty(data, key, {
         get() {
+            // 取值时希望将watcher和dep关联起来
+            if (Dep.target) {// 说明这个值在模板中被访问了
+                dep.depend() // 让dep记住watcher
+            }
+            console.log('dep', dep)
             return value
         },
         set(newVal) {
-            // TODO 更新视图
+            // 相似结果拦截
+            if (newVal === value) return
             observe(newVal);// 当用户设置新对象，则对这个对象进劫持
             value = newVal
+            dep.notify() // 通知所有的watcher
         }
     })
 }

@@ -8,8 +8,12 @@ export function patch(oldNode, vnode) {
         // vnode的虚拟节点替换oldNode的真实节点
         const parentElm = oldNode.parentNode // 找到oldNode的父节点
         let elm = createElm(vnode)  // 创建vnode的真实节点
+        // 第一次生成删除oldNode的真实节点，导致后续更新时，oldNode的真实节点不存在
         parentElm.insertBefore(elm, oldNode.nextSibling);
         parentElm.removeChild(oldNode) // 删除oldNode
+
+        // 返回新节点替换旧节点
+        return elm
     }
 }
 
