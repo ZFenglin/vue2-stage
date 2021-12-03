@@ -31,6 +31,9 @@ methods.forEach(method => {
         // TODO 更新视图
         // 如果有新增对象，则需要对新增的对象进行劫持，需要观测数组每一项，而不是数组本身
         if (inserted) ob.observeArray(inserted)
+
+        // 数组的observe.dep 属性
+        ob.dep.notify()
     }
 })
 

@@ -11,7 +11,8 @@
 <body>
     <div id="app" a="1" style="color: blue;">
         <div>
-            hello:{{name}}
+            hello:{{arr}}
+            hello:{{obj}}
         </div>
     </div>
     <script src="./dist/vue.js"></script>
@@ -21,7 +22,9 @@
         let vm = new Vue({
             data() {
                 return {
-                    name: 'zfl',
+                    // name: 'zfl',
+                    arr: [[1, 2], 3, 4, 5],
+                    obj: { a: { a: 1 } } // JSON.stringify(obj)会不断调用每一个属性的get
                 }
             },
         })
@@ -30,9 +33,11 @@
         setTimeout(() => {
             // 数据变化需要影响视图
             // 多次变化会造成多次触发
-            vm.name = 'zfl2'
-            vm.name = 'zfl3'
-            vm.name = 'zfl4'
+            // vm.name = 'zfl2'
+            // vm.name = 'zfl3'
+            // vm.name = 'zfl4'
+            vm.arr[0].push(6)
+            vm.obj.a.a = 2
             vm.$nextTick(() => {
                 console.log(vm.$el)
             })
@@ -42,3 +47,7 @@
 </body>
 
 </html>
+
+<!--Vue 中嵌套不能太深，否则有大量递归-->
+<!--Vue对象通过defineProperty实现响应式，拦截了get和set，如果不存在属性不会拦截也不会响应， 使用$set让对象自己去notify-->
+<!--Vue数组改索引和长度不会影响更新，通过变异放啊可以更新视图，数组中是对象，则对象也可以更新-->
