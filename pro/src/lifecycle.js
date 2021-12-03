@@ -1,4 +1,5 @@
 import Watcher from "./Observer/watcher"
+import { nextTick } from "./utils"
 import { patch } from "./vdom/patch"
 
 export function lifecycleMixin(Vue) {
@@ -9,6 +10,8 @@ export function lifecycleMixin(Vue) {
         // 更新旧的节点
         vm.$el = patch(vm.$el, vnode)
     }
+
+    Vue.prototype.$nextTick = nextTick
 }
 
 // 后续每个组件渲染时都会有个watcher

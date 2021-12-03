@@ -50,7 +50,6 @@ function defineReactive(data, key, value) {
             if (Dep.target) {// 说明这个值在模板中被访问了
                 dep.depend() // 让dep记住watcher
             }
-            console.log('dep', dep)
             return value
         },
         set(newVal) {

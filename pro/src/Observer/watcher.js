@@ -1,4 +1,5 @@
 import { popTarget, pushTarget } from "./dep"
+import { queueWatcher } from "./scheduler"
 
 let id = 0
 class Watcher {
@@ -24,9 +25,23 @@ class Watcher {
         this.getter() // 渲染是会触发属性的取值即Object.defineProperty.get触发
         popTarget() // Dep.target = null 如果Dep.target有值，说明变量在模板中使用了
     }
+
+    /**
+     * 渲染更新
+     */
     update() {
-        this.get()
+        // 每次更新时 this
+        queueWatcher(this) // 多次调用update，将watcher缓存起来，等下一起更新
     }
+
+    /**
+     * 页面更新
+     */
+    run() {
+        console.log('run')
+        this.get() // 为了后续有其他功能处理
+    }
+
     /**
      * dep添加
      * @param {*} dep 

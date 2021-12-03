@@ -10,7 +10,9 @@
 
 <body>
     <div id="app" a="1" style="color: blue;">
-        <p b="2">hello {{name}} world {{name}}</p>
+        <div>
+            hello:{{name}}
+        </div>
     </div>
     <script src="./dist/vue.js"></script>
     <script>
@@ -31,8 +33,11 @@
             vm.name = 'zfl2'
             vm.name = 'zfl3'
             vm.name = 'zfl4'
+            vm.$nextTick(() => {
+                console.log(vm.$el)
+            })
             // 重新调用render产生新的视图，目前每diff
-        }, 2000);
+        }, 1000);
     </script>
 </body>
 
