@@ -14,7 +14,6 @@ let methods = [
 methods.forEach(method => {
     // 用户调用时，如果用以上的方法，则用重写的，否则用原生的
     arrayMethods[method] = function (...args) {
-        console.log('数组变化了')
         oldArrayPrototype[method].apply(this, args) // 执行原生的方法
         // arr.push({a: 1},{a: 2},{a: 3}) push对象也需要处理，则方法中需要对新增对象进行劫持
         let inserted // 新增的对象

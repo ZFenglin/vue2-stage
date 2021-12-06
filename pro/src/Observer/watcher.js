@@ -38,7 +38,6 @@ class Watcher {
      * 页面更新
      */
     run() {
-        console.log('run')
         this.get() // 为了后续有其他功能处理
     }
 

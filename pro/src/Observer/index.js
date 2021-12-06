@@ -58,8 +58,6 @@ function defineReactive(data, key, value) {
     let childOb = observe(value) // 对象套对象，则需要遍历（性能差）
     // 属性创建自己的dep
     let dep = new Dep()
-
-    console.log(childOb) // 获取数组对应的Observer实例
     Object.defineProperty(data, key, {
         get() {
             // 取值时希望将watcher和dep关联起来
