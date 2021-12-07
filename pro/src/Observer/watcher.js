@@ -8,13 +8,30 @@ class Watcher {
         this.expOrFn = expOrFn
         this.cb = cb
         this.options = options
+        this.user = !!options.user // 是不是用户自定义的watcher
         this.id = id++
-        // 默认让expOrFn执行 expOrFn() 方法作用？render（去vm上取值）
-        this.getter = expOrFn
+
+        // expOrFn判断是否是函数，决定如何处理
+        if (typeof expOrFn === 'string') {
+            this.getter = function () {
+                // 当数据取值时，进行依赖收集
+                // vue中一取值就会触发响应式的getter，所以可以收集依赖
+
+                // age.n ====> vm['age']['n'] 转化取值
+                let path = expOrFn.split('.')
+                let obj = vm
+                for (let i = 0; i < path.length; i++) {
+                    obj = obj[path[i]]
+                }
+                return obj
+            }
+        } else {
+            this.getter = expOrFn
+        }
         this.deps = []
         this.depsId = new Set() // 收集id用于去重
-
-        this.get() // 默认初始化取值
+        // 第一次渲染的value
+        this.value = this.get() // 默认初始化取值
     }
 
     get() { // 稍后用于更新时，可以重新调用getter方法
@@ -22,8 +39,9 @@ class Watcher {
         // 同时希望一个属性可以对应多个watcher,同时一个watcher可以对应多个属性
         pushTarget(this) // Dep.target = this
         // 更新视图
-        this.getter() // 渲染是会触发属性的取值即Object.defineProperty.get触发
+        const value = this.getter() // 渲染是会触发属性的取值即Object.defineProperty.get触发
         popTarget() // Dep.target = null 如果Dep.target有值，说明变量在模板中使用了
+        return value
     }
 
     /**
@@ -38,7 +56,13 @@ class Watcher {
      * 页面更新
      */
     run() {
-        this.get() // 为了后续有其他功能处理
+        // 新旧值获取
+        let newValue = this.get()
+        let oldValue = this.value
+        this.value = newValue
+        if (this.user) {
+            this.cb.call(this.vm, newValue, oldValue)
+        }
     }
 
     /**

@@ -1,5 +1,18 @@
 import { observe } from "./Observer/index"
+import Watcher from "./Observer/watcher"
 import { isFunction } from "./utils"
+
+
+export function stateMixin(Vue) {
+    Vue.prototype.$watch = function (key, handler, options = {}) {
+        options.user = true // 表示是用户自定义的watcher
+        // vm,name,用户回调，用户自定义属性
+        let watcher = new Watcher(this, key, handler, options)
+        if (options.immediate) {
+            handler(watcher.value)
+        }
+    }
+}
 
 /**
  * 状态初始化
@@ -16,9 +29,9 @@ export function initState(vm) {
     // if (opts.computed) {
     //     initComputed()
     // }
-    // if (opts.watch) {
-    //     initWatch()
-    // }
+    if (opts.watch) {
+        initWatch(vm, opts.watch)
+    }
 }
 
 /**
@@ -53,4 +66,33 @@ function initData(vm) { // vm.$el  vue内部会对属性进行检测，若是以
     }
 
     observe(data)
+}
+
+/**
+ * watcher初始化
+ * @param {*} vm 
+ * @param {*} watch 
+ */
+function initWatch(vm, watch) {
+    for (const key in watch) {
+        let handler = watch[key]
+        if (Array.isArray(handler)) {
+            for (let i = 0; i < handler.length; i++) {
+                createWatcher(vm, key, handler[i])
+            }
+        } else {
+            createWatcher(vm, key, handler)
+        }
+    }
+}
+
+/**
+ * vm绑定watcher
+ * @param {*} vm 
+ * @param {*} key 
+ * @param {*} handler 
+ * @returns 
+ */
+function createWatcher(vm, key, handler) {
+    return vm.$watch(key, handler)
 }

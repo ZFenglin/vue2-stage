@@ -30,10 +30,10 @@
             watch: { // 用户watcher
                 // 三种写法
                 // 1. 直接写函数
-                message(newValue, oldValue) {
-                    console.log('Old value: ' + oldValue)
-                    console.log('New value: ' + newValue)
-                },
+                // message(newValue, oldValue) {
+                //     console.log('Old value: ' + oldValue)
+                //     console.log('New value: ' + newValue)
+                // },
                 'age.n'(newValue, oldValue) {
                     console.log('Old value: ' + oldValue)
                     console.log('New value: ' + newValue)
@@ -55,6 +55,11 @@
                 // message: 'messageChange'
 
             }
+        })
+        // 外部注册watcher
+        app.$watch('message', function (newValue, oldValue) {
+            console.log('watch Old value: ' + oldValue)
+            console.log('watch New value: ' + newValue)
         })
 
         setTimeout(() => {
