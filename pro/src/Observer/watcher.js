@@ -10,7 +10,7 @@ class Watcher {
         this.options = options
         this.user = !!options.user // 是不是用户自定义的watcher
         this.id = id++
-
+        this.lazy = !!options.lazy
         // expOrFn判断是否是函数，决定如何处理
         if (typeof expOrFn === 'string') {
             this.getter = function () {
@@ -28,10 +28,12 @@ class Watcher {
         } else {
             this.getter = expOrFn
         }
+
         this.deps = []
         this.depsId = new Set() // 收集id用于去重
+        
         // 第一次渲染的value
-        this.value = this.get() // 默认初始化取值
+        this.value = this.lazy ? undefined : this.get() // 默认初始化取值
     }
 
     get() { // 稍后用于更新时，可以重新调用getter方法

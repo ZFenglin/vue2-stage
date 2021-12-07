@@ -9,62 +9,38 @@
 </head>
 
 <body>
-    <div id="app">{{message}} {{age.n}}</div>
+    <div id="app">{{fullName}}</div>
+    <!-- <script src="node_modules/vue/dist/vue.js"></script> -->
     <script src="dist/vue.js"></script>
     <script>
-        const app = new Vue({
+        const vm = new Vue({
             el: '#app',
             data: {
-                message: 'Hello Vue!',
-                age: {
-                    n: 100
-                }
+                fristName: 'John',
+                lastName: 'Doe',
             },
+            // 计算属性就是watcher
+            // 计算属性默认不执行 Object.defineProperty => getter
+            // 多次取值，依赖的值不变，则不会重新取值
+            // 依赖的值变化 则会重新执行
 
-            methods: {
-                messageChange(newValue, oldValue) {
-                    console.log('Old value: ' + oldValue)
-                    console.log('New value: ' + newValue)
+            // dirty 表示这个值是不是脏的，初始化为true，取值后为false，依赖的值变化，则为true
+            computed: {
+                fullName: {
+                    get() {
+                        console.log('fullName get' + this.fristName + this.lastName);
+                        return this.fristName + ' ' + this.lastName
+                    },
+                    set(newValue) {
+                        console.log('fullName set' + newValue);
+                    }
                 }
-            },
-            watch: { // 用户watcher
-                // 三种写法
-                // 1. 直接写函数
-                // message(newValue, oldValue) {
-                //     console.log('Old value: ' + oldValue)
-                //     console.log('New value: ' + newValue)
-                // },
-                'age.n'(newValue, oldValue) {
-                    console.log('Old value: ' + oldValue)
-                    console.log('New value: ' + newValue)
-                },
-
-                // // 2. 直接写数组(多个监听器)
-                // message: [
-                //     function (newValue, oldValue) {
-                //         console.log('Old value: ' + oldValue)
-                //         console.log('New value: ' + newValue)
-                //     },
-                //     function (newValue, oldValue) {
-                //         console.log('Old2 value: ' + oldValue)
-                //         console.log('New2 value: ' + newValue)
-                //     },
-                // ],
-
-                // //3. 直接写字符串
-                // message: 'messageChange'
-
             }
-        })
-        // 外部注册watcher
-        app.$watch('message', function (newValue, oldValue) {
-            console.log('watch Old value: ' + oldValue)
-            console.log('watch New value: ' + newValue)
         })
 
         setTimeout(() => {
-            app.message = 'Goodbye Vue!'
-            app.age.n = 200
+            vm.fristName = 'zhu'
+            vm.fullName
         }, 1000);
     </script>
 </body>
