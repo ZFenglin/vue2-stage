@@ -20,12 +20,16 @@ class Dep { // 每个属性都有个dep，用来管理自己的依赖，存放wa
 
 Dep.target = null; // 当前订阅者
 
-export function pushTarget(target) {
-    Dep.target = target
+let stack = []
+
+export function pushTarget(wathcer) {
+    stack.push(wathcer)
+    Dep.target = wathcer
 }
 
 export function popTarget() {
-    Dep.target = null
+    stack.pop()
+    Dep.target = stack[stack.length - 1]
 }
 
 export default Dep

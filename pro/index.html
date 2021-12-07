@@ -9,6 +9,10 @@
 </head>
 
 <body>
+    <!--当在页面直接写fullname，fullname会收集渲染watcher fullname没有dep，没有收集功能-->
+    <!--但是firstName是在计算属性中使用，会收集计算属性watcher，但是不会收集渲染wathcer-->
+    <!--计算属性中的值应该记录计算属性的watcher和渲染watcher-->
+    <!--Dep.target上赋值一个渲染watcher 又将Dep.tartget设置为计算属性watcher-->
     <div id="app">{{fullName}}</div>
     <!-- <script src="node_modules/vue/dist/vue.js"></script> -->
     <script src="dist/vue.js"></script>
@@ -37,8 +41,10 @@
                 }
             }
         })
-
+        vm.fullName
+        vm.fullName
         setTimeout(() => {
+            vm.fullName
             vm.fristName = 'zhu'
             vm.fullName
         }, 1000);

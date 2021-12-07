@@ -11,6 +11,8 @@ class Watcher {
         this.user = !!options.user // 是不是用户自定义的watcher
         this.id = id++
         this.lazy = !!options.lazy
+        this.dirty = options.lazy // 如果是计算属性，则默认lazy为true，同样dirty为true
+
         // expOrFn判断是否是函数，决定如何处理
         if (typeof expOrFn === 'string') {
             this.getter = function () {
@@ -31,7 +33,7 @@ class Watcher {
 
         this.deps = []
         this.depsId = new Set() // 收集id用于去重
-        
+
         // 第一次渲染的value
         this.value = this.lazy ? undefined : this.get() // 默认初始化取值
     }
@@ -40,8 +42,8 @@ class Watcher {
         // defineProperty.get 触发，每个属性都可以收集自己的watcher
         // 同时希望一个属性可以对应多个watcher,同时一个watcher可以对应多个属性
         pushTarget(this) // Dep.target = this
-        // 更新视图
-        const value = this.getter() // 渲染是会触发属性的取值即Object.defineProperty.get触发
+        // 更新视图 注意函数this
+        const value = this.getter.call(this.vm) // 渲染是会触发属性的取值即Object.defineProperty.get触发
         popTarget() // Dep.target = null 如果Dep.target有值，说明变量在模板中使用了
         return value
     }
@@ -50,8 +52,12 @@ class Watcher {
      * 渲染更新
      */
     update() {
-        // 每次更新时 this
-        queueWatcher(this) // 多次调用update，将watcher缓存起来，等下一起更新
+        if (this.lazy) {
+            this.dirty = true
+        } else {
+            // 每次更新时 this
+            queueWatcher(this) // 多次调用update，将watcher缓存起来，等下一起更新
+        }
     }
 
     /**
@@ -77,6 +83,21 @@ class Watcher {
             this.depsId.add(id)
             this.deps.push(dep)
             dep.addSub(this)
+        }
+    }
+
+    /**
+     * computed属性的watcher求值
+     */
+    evaluate() {
+        this.dirty = false
+        this.value = this.get() // 用户的getter执行
+    }
+
+    depend() {
+        let i = this.deps.length
+        while (i--) {
+            this.deps[i].depend() // lastName和firstName收集渲染watcher
         }
     }
 }
