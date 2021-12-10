@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* :root{
+            直接控制根元素
+        } */
+        /* 不会被外部元素影响 */
+        button {
+            background-color: white;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <fl-button type="primary">按钮</fl-button>
+    <fl-button type="default">按钮</fl-button>
+    <!--内容不会被渲染到视图上，不会影响页面展示，可以使用模板-->
+    <template id="btn">
+        <button class="fl-button">
+            <solt>默认按钮</solt>
+        </button>
+    </template>
+    <script>
+        class FlButton extends HTMLElement {
+            constructor() {
+                super()
+                let shadow = this.attachShadow({ mode: 'open' }) // 例如video, open决定外部是否可以看到
+                // 元素添加
+                let btn = document.getElementById('btn')
+                let btnClone = btn.content.cloneNode(true) // 复制一份模板
+                shadow.appendChild(btnClone)
+                let type = this.getAttribute('type') || 'default'
+                const btnStyle = {
+                    'primary': {
+                        backgroud: "#409eff"
+                    },
+                    'default': {
+                        backgroud: "#909399"
+                    }
+                }
+                // 样式添加（但是用户无法自定义，可以控制属性或使用CSS变量控制）
+                const style = document.createElement('style')
+                style.textContent = `
+                    .fl-button {
+                        outline: none;
+                        border: none;
+                        border-radius: 5px;
+                        padding: 10px 20px;
+                        display: inline-flex;
+                        color: #FFF;
+                        background: ${btnStyle[type].backgroud};
+                    }
+                    `
+                shadow.appendChild(style)
+            }
+        }
+        // 定义了一个自定义标签组件
+        window.customElements.define('fl-button', FlButton);
+    </script>
+</body>
+
+</html>
