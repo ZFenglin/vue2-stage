@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 名字必须用短横线连接，保证是用户自定义 -->
+    <fl-collapse>
+        <fl-collapse-item title="node" name="1">
+            <div>node.js welcome</div>
+        </fl-collapse-item>
+        <fl-collapse-item title="react" name="2">
+            <div>react welcome</div>
+        </fl-collapse-item>
+        <fl-collapse-item title="vue" name="3">
+            <div>vue welcome</div>
+        </fl-collapse-item>
+    </fl-collapse>
+    <!-- 没有实际意义，不会渲染到页面 -->
+    <template id="collapse_tmp1">
+        <div class="fl-collapse">
+            <slot></slot>
+        </div>
+    </template>
+    <template id="collapse_item_tmp1">
+        <div class="fl-collapse-item">
+            <div class="title"></div>
+            <div class="content">
+                <slot></slot>
+            </div>
+        </div>
+    </template>
+    <!-- type="module"表示原生的模块, vite实现原理依赖于这个module -->
+    <!-- 当需要再html中使用模块就要设置type="module" -->
+    <script src="./index.js" type="module"></script>
+</body>
+
+</html>
