@@ -25,5 +25,5 @@ export function mountComponent(vm, el) {
 
     // 观察者模式: 属性=>被观察者  刷新页面=>观察者
     // updateComponent()
-    new Watcher(vm, updateComponent, () => { console.log('updateComponent') }, true) //true表示为 渲染watcher 后续有其他的watcher
+    new Watcher(vm, updateComponent, () => { }, true) //true表示为 渲染watcher 后续有其他的watcher
 }

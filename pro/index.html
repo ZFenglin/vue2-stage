@@ -9,45 +9,13 @@
 </head>
 
 <body>
-    <!--当在页面直接写fullname，fullname会收集渲染watcher fullname没有dep，没有收集功能-->
-    <!--但是firstName是在计算属性中使用，会收集计算属性watcher，但是不会收集渲染wathcer-->
-    <!--计算属性中的值应该记录计算属性的watcher和渲染watcher-->
-    <!--Dep.target上赋值一个渲染watcher 又将Dep.tartget设置为计算属性watcher-->
-    <div id="app">{{fullName}}</div>
-    <!-- <script src="node_modules/vue/dist/vue.js"></script> -->
-    <script src="dist/vue.js"></script>
+    <div id="app"></div>
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <!-- <script src="dist/vue.js"></script> -->
     <script>
         const vm = new Vue({
             el: '#app',
-            data: {
-                fristName: 'John',
-                lastName: 'Doe',
-            },
-            // 计算属性就是watcher
-            // 计算属性默认不执行 Object.defineProperty => getter
-            // 多次取值，依赖的值不变，则不会重新取值
-            // 依赖的值变化 则会重新执行
-
-            // dirty 表示这个值是不是脏的，初始化为true，取值后为false，依赖的值变化，则为true
-            computed: {
-                fullName: {
-                    get() {
-                        console.log('fullName get' + this.fristName + this.lastName);
-                        return this.fristName + ' ' + this.lastName
-                    },
-                    set(newValue) {
-                        console.log('fullName set' + newValue);
-                    }
-                }
-            }
         })
-        vm.fullName
-        vm.fullName
-        setTimeout(() => {
-            vm.fullName
-            vm.fristName = 'zhu'
-            vm.fullName
-        }, 1000);
     </script>
 </body>
 
