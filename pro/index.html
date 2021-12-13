@@ -9,38 +9,28 @@
 </head>
 
 <body>
-    <div id="app"></div>
+    <div id="app">
+        <my-button></my-button>
+    </div>
     <!-- <script src="node_modules/vue/dist/vue.js"></script> -->
     <script src="dist/vue.js"></script>
     <script>
-        // 类似发布订阅，维护一个数组，当到达某个阶段后依次执行
-        // Vue.options = {beforeCreate:[fn1,fn2]}
-        Vue.mixin({
-            beforeCreate() {
-                console.log('beforeCreate1');
-            }
-        })
-        Vue.mixin({
-            beforeCreate() {
-                console.log('beforeCreate2');
-            }
+
+        Vue.component('my-button', {
+            template: '<button>golbal</button>'
         })
         const vm = new Vue({
             el: '#app',
             // vm.$options.beforeCreate:[fn1,fn2,fn3]
-            beforeCreate() {
-                console.log('beforeCreate3')
+            components: {
+                // 优先局部，即原型链的__proto__
+                'my-button': {
+                    template: '<button>inner</button>'
+                }
             },
-            created() {
-                console.log('created')
-            },
-            beforeMount() {
-                console.log('beforeMount')
-            },
-            // mounted() {
-            //     console.log('mounted')
-            // },
         })
+
+        console.log(vm.$options.components)
     </script>
 </body>
 

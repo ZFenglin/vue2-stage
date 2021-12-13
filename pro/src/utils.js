@@ -106,6 +106,17 @@ function mergeHook(parentVal, childVal) {
     }
 }
 
+// 组件策略添加
+strats.components = function (parentVal, childVal) {
+    let options = Object.create(parentVal) // 根据父对象构造一个新对象
+    if (childVal) {
+        for (let key in childVal) {
+            options[key] = childVal[key]
+        }
+    }
+    return options
+}
+
 /**
  * 合并属性
  * @param {*} parent 
