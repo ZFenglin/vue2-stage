@@ -73,3 +73,74 @@ export function nextTick(cb) {
     }
 }
 
+
+
+let strats = {} // 存放策略
+
+// 钩子函数策略添加
+let lifecycleHooks = [
+    'beforeCreate',
+    'created',
+    'beforeMount',
+    'mounted',
+    'beforeUpdate',
+    'updated',
+    'beforeDestroy',
+    'destroyed',
+    'activated',
+    'deactivated'
+]
+
+lifecycleHooks.forEach(hook => {
+    strats[hook] = mergeHook
+})
+function mergeHook(parentVal, childVal) {
+    if (childVal) {
+        if (parentVal) {
+            return parentVal.concat(childVal)
+        } else {
+            return [childVal] //  第一次执行
+        }
+    } else {
+        return parentVal
+    }
+}
+
+/**
+ * 合并属性
+ * @param {*} parent 
+ * @param {*} child 
+ */
+export function mergeOptions(parent, child) {
+    const options = {} // 结果
+    // 父亲有的
+    for (const key in parent) {
+        mergeField(key)
+    }
+    // 孩子有的
+    for (const key in child) {
+        // 过滤已经处理过的属性
+        if (parent.hasOwnProperty(key)) {
+            continue
+        }
+        mergeField(key)
+    }
+
+    function mergeField(key) {
+        let parentVal = parent[key]
+        let childVal = child[key]
+        // 策略模式, 减少if else嵌套
+        if (strats[key]) {
+            // 存在对应策略则执行策略
+            options[key] = strats[key](parentVal, childVal)
+        } else {
+            // 否则执行默认
+            if (isObject(parentVal) && isObject(childVal)) {
+                options[key] = { ...parentVal, ...childVal }
+            } else {
+                options[key] = childVal
+            }
+        }
+    }
+    return options
+}

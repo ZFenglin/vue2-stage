@@ -1,3 +1,4 @@
+import { initGolbalApi } from "./global-api/index"
 import { initMixin } from "./init"
 import { lifecycleMixin } from "./lifecycle"
 import { renderMixin } from "./render"
@@ -14,5 +15,8 @@ initMixin(Vue)
 renderMixin(Vue) // _render方法
 lifecycleMixin(Vue) // _update方法
 stateMixin(Vue)
+
+// 在类上扩展
+initGolbalApi(Vue)
 
 export default Vue
