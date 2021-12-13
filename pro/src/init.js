@@ -4,19 +4,21 @@
  */
 
 import { compileToFunction } from "./Compiler/index"
-import { mountComponent } from "./lifecycle"
+import { callHook, mountComponent } from "./lifecycle"
 import { initState } from "./state"
+import { mergeOptions } from "./utils"
 
 // Vue的基础上做一次混合操作
 export function initMixin(Vue) {
     // _业界规范，不希望被外部使用
     Vue.prototype._init = function (options) {
         const vm = this
-        vm.$options = options // 将用户传入的选项保存在vm.$options中
-
+        // this.constructor 指向Vue 方便再子类的时候可以获取到
+        vm.$options = mergeOptions(this.constructor.options, options) // 将用户传入的选项保存在vm.$options中
+        callHook(vm, 'beforeCreate')
         // 数据初始化 watch computed props data
         initState(vm) // vm.$options.data
-
+        callHook(vm, 'created')
         if (vm.$options.el) {
             vm.$mount(vm.$options.el) // 将数据挂载到vm.$el上
         }

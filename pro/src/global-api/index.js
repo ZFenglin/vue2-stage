@@ -10,7 +10,6 @@ export function initGolbalApi(Vue) {
         // 合并options
         this.options = mergeOptions(this.options, options)
         // 返回执行对象，支持链式调用
-        console.log(this.options)
         return this
     }
 }

@@ -16,6 +16,7 @@ export function lifecycleMixin(Vue) {
 
 // 后续每个组件渲染时都会有个watcher
 export function mountComponent(vm, el) {
+    callHook(vm, "beforeMount")
     // 更新函数 数据变化后 会再次调用
     let updateComponent = () => {
         // 调用render函数，生成虚拟dom
@@ -26,4 +27,14 @@ export function mountComponent(vm, el) {
     // 观察者模式: 属性=>被观察者  刷新页面=>观察者
     // updateComponent()
     new Watcher(vm, updateComponent, () => { }, true) //true表示为 渲染watcher 后续有其他的watcher
+}
+
+// 生命周期钩子
+export function callHook(vm, hook) {
+    let handlers = vm.$options[hook]
+    if (handlers) {
+        handlers.forEach(handler => {
+            handler.call(vm)
+        })
+    }
 }
