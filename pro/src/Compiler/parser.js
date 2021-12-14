@@ -20,66 +20,70 @@ const defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g // {{}}
 // ast（语法层面的描述 js css html 都可以） vdom（虚拟dom）
 // html字符串解析成对应的ast，对应脚本来来触发
 // 利用htmlparser2来解析模板
-/**
- * 创建Ast元素
- * @param {*} tagName 
- * @param {*} attrs 
- * @returns 
- */
-function creatAstElement(tagName, attrs) {
-    return {
-        tag: tagName,
-        type: 1,
-        children: [],
-        parent: null,
-        attrs: attrs
-    }
 
-}
-
-// 将解析后的结果组成一个树结构
-// 利用栈进行决定父子关系，栈顶为当前节点父节点，遇见结束标签则出栈
-let root = null
-let stack = []
-function start(tagName, attributes) {
-    // 创建元素
-    let element = creatAstElement(tagName, attributes)
-    // 根元素判断
-    if (!root) {
-        root = element
-    }
-    // 当前元素父元素设置和父元素的children设置
-    let parent = stack[stack.length - 1]
-    if (parent) {
-        element.parent = parent
-        parent.children.push(element)
-    }
-    // 栈中添加当前元素
-    stack.push(element)
-}
-function end(tagName) {
-    let last = stack.pop()
-    if (last.tag !== tagName) {
-        throw new Error(`invalid end tag </${tagName}>`) // 标签闭合不匹配
-    }
-}
-function chars(text) {
-    text = text.replace(/\s/g, '') // 去除空格
-    let parent = stack[stack.length - 1]
-    if (text) {
-        // 创建文本节点
-        parent.children.push({
-            type: 3,
-            text: text
-        })
-    }
-}
 
 /**
  * 解析html字符串
  * @param {*} html 
  */
 export function parserHTML(html) { // <div id='app'>123</div>
+    // 将解析放进来,每次解析都会创建一个新的root
+    /**
+ * 创建Ast元素
+ * @param {*} tagName 
+ * @param {*} attrs 
+ * @returns 
+ */
+    function creatAstElement(tagName, attrs) {
+        return {
+            tag: tagName,
+            type: 1,
+            children: [],
+            parent: null,
+            attrs: attrs
+        }
+
+    }
+
+    // 将解析后的结果组成一个树结构
+    // 利用栈进行决定父子关系，栈顶为当前节点父节点，遇见结束标签则出栈
+    let root = null
+    let stack = []
+    function start(tagName, attributes) {
+        // 创建元素
+        let element = creatAstElement(tagName, attributes)
+        // 根元素判断
+        if (!root) {
+            root = element
+        }
+        // 当前元素父元素设置和父元素的children设置
+        let parent = stack[stack.length - 1]
+        if (parent) {
+            element.parent = parent
+            parent.children.push(element)
+        }
+        // 栈中添加当前元素
+        stack.push(element)
+    }
+    function end(tagName) {
+        let last = stack.pop()
+        if (last.tag !== tagName) {
+            throw new Error(`invalid end tag </${tagName}>`) // 标签闭合不匹配
+        }
+    }
+    function chars(text) {
+        text = text.replace(/\s/g, '') // 去除空格
+        let parent = stack[stack.length - 1]
+        if (text) {
+            // 创建文本节点
+            parent.children.push({
+                type: 3,
+                text: text
+            })
+        }
+    }
+
+
     /**
      * html字符串前进
      * @param {*} len 

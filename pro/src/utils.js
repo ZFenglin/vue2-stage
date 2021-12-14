@@ -149,9 +149,17 @@ export function mergeOptions(parent, child) {
             if (isObject(parentVal) && isObject(childVal)) {
                 options[key] = { ...parentVal, ...childVal }
             } else {
-                options[key] = childVal
+                // 父亲中有而儿子中没有的
+                options[key] = childVal || parentVal
             }
         }
     }
     return options
+}
+
+
+export function isReservedTag(str) {
+    let reservedTag = 'a,div,span,img,input,button,textarea,form,p,h1,h2,h3,h4,h5,h6,ul,li,ol,dl,dt,dd,table,tr,th,td,select,option,optgroup,meta,link,style,script,head,title,body,html'
+    // 源码是生成映射表 , {a:true, div:true ...}
+    return reservedTag.includes(str)
 }

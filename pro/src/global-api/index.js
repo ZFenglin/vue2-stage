@@ -22,8 +22,8 @@ export function initGolbalApi(Vue) {
     }
     Vue.extend = function (definition) { // extend方法就是产生Vue的子类，同时具有父类上所有功能
         const Super = this
-        const Sub = function VueComponent() {
-            this._init()
+        const Sub = function VueComponent(options) {
+            this._init(options)
         }
         // 原型继承
         Sub.prototype = Object.create(Super.prototype)
