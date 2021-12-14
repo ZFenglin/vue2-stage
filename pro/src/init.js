@@ -15,7 +15,6 @@ export function initMixin(Vue) {
         const vm = this
         // this.constructor 指向Vue 方便再子类的时候可以获取到
         vm.$options = mergeOptions(this.constructor.options, options) // 将用户传入的选项保存在vm.$options中
-        console.log(vm.$options)
         callHook(vm, 'beforeCreate')
         // 数据初始化 watch computed props data
         initState(vm) // vm.$options.data

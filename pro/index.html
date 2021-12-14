@@ -22,10 +22,24 @@
         const vm = new Vue({
             el: '#app',
             // vm.$options.beforeCreate:[fn1,fn2,fn3]
+            // 创建时先父亲后儿子
+            beforeCreate() {
+                console.log('beforeCreate', 'parent')
+            },
+            // 挂载时先儿子后父亲
+            mounted() {
+                console.log('mounted', 'parent')
+            },
             components: {
                 // 优先局部，即原型链的__proto__
                 'my-button': {
-                    template: '<button>inner</button>'
+                    template: '<button>inner</button>',
+                    beforeCreate() {
+                        console.log('beforeCreate', 'child')
+                    },
+                    mounted() {
+                        console.log('mounted', 'child')
+                    }
                 }
             },
         })
