@@ -27,7 +27,7 @@ function gen(el) {
     } else {
         let text = el.text
         if (!defaultTagRE.test(text)) {
-            return `_v(${el.text})`
+            return `_v(${JSON.stringify(text)})`
         } else {
             // hello {{name}} world
             let tokens = []
