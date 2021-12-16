@@ -3,6 +3,7 @@ import { initMixin } from "./init"
 import { lifecycleMixin } from "./lifecycle"
 import { renderMixin } from "./render"
 import { stateMixin } from "./state"
+import { diffTest } from "./test/diff"
 
 // 构造函数模拟class
 function Vue(options) {
@@ -18,5 +19,7 @@ stateMixin(Vue)
 
 // 在类上扩展
 initGolbalApi(Vue)
+
+diffTest(Vue)
 
 export default Vue
