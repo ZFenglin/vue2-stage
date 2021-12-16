@@ -7,8 +7,13 @@ export function lifecycleMixin(Vue) {
     Vue.prototype._update = function (vnode) {
         // 既有初始化，也有更新
         const vm = this
-        // 更新旧的节点
-        vm.$el = patch(vm.$el, vnode)
+        const preVnode = vm._vnode  // 将当前的虚拟存起来
+        if (!preVnode) { // 初次渲染
+            vm.$el = patch(vm.$el, vnode)
+        } else {// 后续更新渲染
+            vm.$el = patch(preVnode, vnode)
+        }
+        vm._vnode = vnode
     }
 
     Vue.prototype.$nextTick = nextTick

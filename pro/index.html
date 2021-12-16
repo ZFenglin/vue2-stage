@@ -9,8 +9,23 @@
 </head>
 
 <body>
+    <!-- 循环时尽量不用索引作为key,可能会导致无法复用 -->
+    <div id="app">
+        <li>{{message}}</li>
+    </div>
     <!-- <script src="node_modules/vue/dist/vue.js"></script> -->
     <script src="dist/vue.js"></script>
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue!'
+            }
+        })
+        setTimeout(() => {
+            vm.message = 'zfl'
+        }, 3000);
+    </script>
 </body>
 
 </html>

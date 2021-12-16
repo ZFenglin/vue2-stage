@@ -28,10 +28,10 @@ export function diffTest(Vue) {
 
   // 标签一样，属性不同
   let newTemplate = `<div>
-  <li key="D">D</li>
-  <li key="A">A</li>
   <li key="B">B</li>
   <li key="C">C</li>
+  <li key="D">D</li>
+  <li key="A">A</li>
   </div>`
   let vm2 = new Vue({ data: { msg: 'zfl' } })
   const render2 = compileToFunction(newTemplate)
