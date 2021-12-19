@@ -64,7 +64,7 @@ export function initExtend (Vue: GlobalAPI) {
     })
     // enable recursive self-lookup
     if (name) {
-      Sub.options.components[name] = Sub
+      Sub.options.components[name] = Sub /// 子组件再自己的模板中使用自己
     }
 
     // keep a reference to the super options at extension time.

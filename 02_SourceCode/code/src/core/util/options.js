@@ -168,7 +168,7 @@ function dedupeHooks (hooks) {
   }
   return res
 }
-
+/// 循环所有钩子配置策略
 LIFECYCLE_HOOKS.forEach(hook => {
   strats[hook] = mergeHook
 })
@@ -189,7 +189,7 @@ function mergeAssets (
   const res = Object.create(parentVal || null)
   if (childVal) {
     process.env.NODE_ENV !== 'production' && assertObjectType(key, childVal, vm)
-    return extend(res, childVal)
+    return extend(res, childVal) /// 将childval属性，循环到了res上
   } else {
     return res
   }
@@ -406,10 +406,13 @@ export function mergeOptions (
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
   // Only merged options has the _base property.
+
+  /// Vue.mixin 将属性全部方到Vue.options中
   if (!child._base) {
-    if (child.extends) {
+    if (child.extends) { /// {extends:{}} 
       parent = mergeOptions(parent, child.extends, vm)
     }
+    /// mixins 原理就是进行合并选项的
     if (child.mixins) {
       for (let i = 0, l = child.mixins.length; i < l; i++) {
         parent = mergeOptions(parent, child.mixins[i], vm)

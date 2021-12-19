@@ -50,7 +50,8 @@ export function initGlobalAPI (Vue: GlobalAPI) {
     observe(obj) /// 监控对象
     return obj
   }
-
+  /// 用户自定义的全局属性 方法 component directive filter
+  /// Vue.mixin({data,hook}) 数据来源不清晰，好处是可以复用（高阶组件），但是不推荐使用
   Vue.options = Object.create(null)
   ASSET_TYPES.forEach(type => {
     /// vue.options.components.xx = xx
@@ -63,11 +64,11 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // components with in Weex's multi-instance scenarios.
   Vue.options._base = Vue /// vue创建函数实例
 
-
+  /// keep-alive是全局组件 Vue.component Vue.options.component
   extend(Vue.options.components, builtInComponents) /// keep-alive
 
   initUse(Vue) /// vue.use 常问
-  initMixin(Vue) /// vue.mixin
+  initMixin(Vue) /// vue.mixin => mergeOptions
   initExtend(Vue) /// vue.extend
   initAssetRegisters(Vue) /// vue.component vue.filter vue.directive
 }

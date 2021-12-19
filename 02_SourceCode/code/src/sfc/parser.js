@@ -6,7 +6,7 @@ import { makeMap } from 'shared/util'
 
 const splitRE = /\r?\n/g
 const replaceRE = /./g
-const isSpecialTag = makeMap('script,style,template', true)
+const isSpecialTag = makeMap('script,style,template', true) /// 解析Vue文件模板
 
 /**
  * Parse a single-file component (*.vue) file into an SFC Descriptor Object.

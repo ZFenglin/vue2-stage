@@ -5,7 +5,7 @@ import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 
 /// complier可以直接使用render函数，但是不能用template，.vue的template靠vue-loader处理
 
-initGlobalAPI(Vue) /// 初始化Vue的全局API
+initGlobalAPI(Vue) /// 初始化Vue的全局API，封装静态方法
 
 // Object.defineProperty(Vue.prototype, '$isServer', {
 //   get: isServerRendering

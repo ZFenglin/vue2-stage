@@ -16,7 +16,7 @@ export function initMixin (Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // a uid
-    vm._uid = uid++
+    vm._uid = uid++ /// 唯一标识，可以用于key
 
     let startTag, endTag
     /* istanbul ignore if */
@@ -27,15 +27,15 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     // a flag to avoid this being observed
-    vm._isVue = true
+    vm._isVue = true /// 表标识为Vue实例，是不会被观测的
     // merge options
-    if (options && options._isComponent) {
+    if (options && options._isComponent) { /// 如果是组件，则需要对组件的属性 事件
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
-      vm.$options = mergeOptions(
+      vm.$options = mergeOptions( /// Vue.options 和自己的属性合并
         resolveConstructorOptions(vm.constructor),
         options || {},
         vm
@@ -58,14 +58,14 @@ export function initMixin (Vue: Class<Component>) {
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
 
-    /* istanbul ignore if */
-    if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
-      vm._name = formatComponentName(vm, false)
-      mark(endTag)
-      measure(`vue ${vm._name} init`, startTag, endTag)
-    }
+    // /* istanbul ignore if */
+    // if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+    //   vm._name = formatComponentName(vm, false)
+    //   mark(endTag)
+    //   measure(`vue ${vm._name} init`, startTag, endTag)
+    // }
 
-    if (vm.$options.el) {
+    if (vm.$options.el) { /// 组件挂载
       vm.$mount(vm.$options.el)
     }
   }
