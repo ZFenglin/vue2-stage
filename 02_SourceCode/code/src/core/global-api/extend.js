@@ -40,7 +40,7 @@ export function initExtend (Vue: GlobalAPI) {
       Super.options,
       extendOptions
     )
-    Sub['super'] = Super
+    Sub['super'] = Super /// 子类增加Super属性
 
     // For props and computed properties, we define the proxy getters on
     // the Vue instances at extension time, on the extended prototype. This

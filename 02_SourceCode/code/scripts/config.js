@@ -34,7 +34,13 @@ const resolve = p => {
     return path.resolve(__dirname, '../', p)
   }
 }
+/// 编译配置
+/// format: 'cjs' => commonjs
+/// format: 'es' => esModule 在webpack环境下使用 vue-cli 生成项目
+/// format: 'umd' => amd + commonjs
 
+/// development (由warning提示) production
+/// web-full = web-complier(template=>ast) 
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
@@ -215,7 +221,7 @@ const builds = {
 
 function genConfig (name) {
   const opts = builds[name]
-  const config = {
+  const config = { /// rollup配置
     input: opts.entry,
     external: opts.external,
     plugins: [

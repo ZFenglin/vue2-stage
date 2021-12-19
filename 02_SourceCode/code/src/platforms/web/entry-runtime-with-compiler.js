@@ -14,12 +14,12 @@ const idToTemplate = cached(id => {
   return el && el.innerHTML
 })
 
-const mount = Vue.prototype.$mount
+const mount = Vue.prototype.$mount /// 先获取原有的mount
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
-  el = el && query(el)
+  el = el && query(el) /// 获取当前元素
 
   /* istanbul ignore if */
   if (el === document.body || el === document.documentElement) {
@@ -31,7 +31,7 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
-  if (!options.render) {
+  if (!options.render) { /// 是否有render，如果没render则找template
     let template = options.template
     if (template) {
       if (typeof template === 'string') {
@@ -45,7 +45,7 @@ Vue.prototype.$mount = function (
             )
           }
         }
-      } else if (template.nodeType) {
+      } else if (template.nodeType) { /// 如果时DOM对象，则直接取内容
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -53,7 +53,7 @@ Vue.prototype.$mount = function (
         }
         return this
       }
-    } else if (el) {
+    } else if (el) { /// 去外部模板
       template = getOuterHTML(el)
     }
     if (template) {
@@ -79,14 +79,14 @@ Vue.prototype.$mount = function (
       }
     }
   }
-  return mount.call(this, el, hydrating)
+  return mount.call(this, el, hydrating) /// 高阶函数，函数劫持，用户调用$mount方法时，会先执行重写后的部分，然后再调用原有的mount方法，增加了compileToFunctions功能
 }
 
 /**
  * Get outerHTML of elements, taking care
  * of SVG elements in IE as well.
  */
-function getOuterHTML (el: Element): string {
+function getOuterHTML(el: Element): string {
   if (el.outerHTML) {
     return el.outerHTML
   } else {
@@ -96,6 +96,6 @@ function getOuterHTML (el: Element): string {
   }
 }
 
-Vue.compile = compileToFunctions
+Vue.compile = compileToFunctions /// 将template转变成render函数，在runtime上添加了complier
 
 export default Vue

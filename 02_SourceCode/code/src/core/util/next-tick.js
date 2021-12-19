@@ -13,7 +13,7 @@ let pending = false
 function flushCallbacks () {
   pending = false
   const copies = callbacks.slice(0)
-  callbacks.length = 0
+  callbacks.length = 0 /// 清空队列
   for (let i = 0; i < copies.length; i++) {
     copies[i]()
   }
