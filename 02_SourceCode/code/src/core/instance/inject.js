@@ -29,7 +29,7 @@ export function initInjections (vm: Component) {
           )
         })
       } else {
-        defineReactive(vm, key, result[key])
+        defineReactive(vm, key, result[key]) /// 将当前的数据放到当前的实例上
       }
     })
     toggleObserving(true)
@@ -50,7 +50,7 @@ export function resolveInject (inject: any, vm: Component): ?Object {
       if (key === '__ob__') continue
       const provideKey = inject[key].from
       let source = vm
-      while (source) {
+      while (source) { /// 不停往上查找父亲中的provider，直到找到为止
         if (source._provided && hasOwn(source._provided, provideKey)) {
           result[key] = source._provided[provideKey]
           break

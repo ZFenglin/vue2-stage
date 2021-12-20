@@ -44,7 +44,7 @@ export default class Dep {
       subs.sort((a, b) => a.id - b.id)
     }
     for (let i = 0, l = subs.length; i < l; i++) {
-      subs[i].update()
+      subs[i].update() /// 调用watcher更新
     }
   }
 }

@@ -54,14 +54,14 @@ export default class Watcher {
     if (isRenderWatcher) {
       vm._watcher = this
     }
-    vm._watchers.push(this)
+    vm._watchers.push(this) /// 为了更强制更新
     // options
     if (options) {
       this.deep = !!options.deep
       this.user = !!options.user
       this.lazy = !!options.lazy
-      this.sync = !!options.sync
-      this.before = options.before
+      this.sync = !!options.sync /// 文档上没有提到，内部使用
+      this.before = options.before /// 再watcher执行之前做的事
     } else {
       this.deep = this.user = this.lazy = this.sync = false
     }
@@ -118,7 +118,7 @@ export default class Watcher {
         traverse(value)
       }
       popTarget()
-      this.cleanupDeps()
+      this.cleanupDeps() /// 不清理， 可能上次的数据会被再次收集
     }
     return value
   }
@@ -167,7 +167,7 @@ export default class Watcher {
     if (this.lazy) {
       this.dirty = true
     } else if (this.sync) {
-      this.run()
+      this.run() /// 开发环境下使用不到
     } else {
       queueWatcher(this)
     }

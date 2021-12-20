@@ -49,11 +49,11 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
-    initRender(vm)
+    initLifecycle(vm) /// 初始化组件的父子关系 $parent $childern 实现原理
+    initEvents(vm) 
+    initRender(vm) /// 初始化插槽 _c $attrs $listeners $slots
     callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
+    initInjections(vm) // resolve injections before data/props /// inject/provider 隔代传输数据，不建议开发使用，因为值不清楚由谁提供
     initState(vm)
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
@@ -66,7 +66,7 @@ export function initMixin (Vue: Class<Component>) {
     // }
 
     if (vm.$options.el) { /// 组件挂载
-      vm.$mount(vm.$options.el)
+      vm.$mount(vm.$options.el) /// 调用的时 with-compiler 获取这 runtime
     }
   }
 }
