@@ -44,10 +44,12 @@ const componentVNodeHooks = {
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
+      /// 根据组件实例创建vnode
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance
       )
+      /// 调用组件的_init并且将最终渲染的内容放到vm.$el上
       child.$mount(hydrating ? vnode.elm : undefined, hydrating)
     }
   },
