@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-    <ClickOutside></ClickOutside>
+    <LazyLoad></LazyLoad>
   </div>
 </template>
 
 <script>
-import ClickOutside from "@/components/click-outside.vue";
+import LazyLoad from "@/components/lazy-load.vue";
 export default {
   components: {
-    ClickOutside: ClickOutside,
+    LazyLoad,
   },
 };
 </script>
