@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-    <LazyLoad></LazyLoad>
+    <Form></Form>
   </div>
 </template>
 
 <script>
-import LazyLoad from "@/components/lazy-load.vue";
+import Form from "@/components/form/form.vue";
 export default {
   components: {
-    LazyLoad,
+    Form,
   },
 };
 </script>
