@@ -9,6 +9,8 @@
 
 <script>
 // 指令特点可以复用，核心控制dom,给dom绑定事件
+
+// vue简单，但是需要记住API react容易，无需掌握API
 export default {
   directives: {
     clickOutside: {
@@ -16,7 +18,7 @@ export default {
       // 绑定时调用
       bind(el, bindings, vnode) {
         console.log("bind");
-        // el:绑定的元素,bindings:绑定的属性,vnode:绑定的虚拟节点
+        // el:绑定的元素,bindings:绑定的修饰符和值,vnode:绑定的虚拟节点
         const handler = (e) => {
           if (!el.contains(e.target)) {
             // contains原生方法
