@@ -13,7 +13,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 module.exports = {
     mode: 'development',
-    entry: path.resolve(__dirname, 'src/main.js'),
     output: {
         filename: '[name].bundle.js', // 默认就是main.js，目录默认是dist目录
     },
@@ -21,7 +20,7 @@ module.exports = {
         rules: [
             {
                 test: /\.vue$/,
-                use: 'vue-loader'
+                use: 'vue-loader' // 需要HtmlWebpackPlugin
             },
             {
                 test: /\.js$/,
@@ -40,7 +39,7 @@ module.exports = {
                     {
                         loader: 'css-loader',
                         options: {
-                            esModule: false, // 配套使用vue-style-loader
+                            esModule: false, // 配套使用vue-style-loader, 才能支持SSR
                         }
                     },
                 ] // 从右向左执行
