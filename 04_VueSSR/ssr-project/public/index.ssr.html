@@ -10,8 +10,10 @@
 
 <body>
     <!--vue-ssr-outlet-->
-    <!-- 绑定客户端代码使其支持客户端的交互 -->
-    <script src="/client.bundle.js"></script>
+    <!-- 绑定客户端代码使其支持客户端的交互，同时会对代码并不会重新渲染，对服务端渲染进行了过滤 -->
+
+    <!-- ejs模板 -->
+    <script src="<%=htmlWebpackPlugin.options.client%>"></script>
 </body>
 
 </html>

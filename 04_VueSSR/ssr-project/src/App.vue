@@ -1,8 +1,9 @@
 <template>
   <!-- 加上app，用于给客户端代码进行绑定连接的 -->
   <div id="app">
-    <Foo></Foo>
-    <Bar></Bar>
+    <router-link to="/">foo</router-link>
+    <router-link to="/bar">bar</router-link>
+    <router-view></router-view>
   </div>
 </template>
 

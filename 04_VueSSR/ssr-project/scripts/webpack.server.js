@@ -17,7 +17,8 @@ module.exports = merge(baseConfig, {
             template: path.resolve(__dirname, '../public/index.ssr.html'),
             filename: 'server.html',
             excludeChunks: ['server'], // js无需引入，直接使用html
-            minify: false // 不压缩
+            minify: false, // 不压缩
+            client: '/client.bundle.js', // 引入客户端的bundle文件
         }),
     ],
 })
