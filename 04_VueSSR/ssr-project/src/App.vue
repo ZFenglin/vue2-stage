@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <!-- 加上app，用于给客户端代码进行绑定连接的 -->
+  <div id="app">
     <Foo></Foo>
     <Bar></Bar>
   </div>

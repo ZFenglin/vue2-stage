@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "client:dev": "webpack serve --config scripts/webpack.client.js",
-    "client:build": "webpack --config scripts/webpack.client.js",
-    "server:build": "webpack --config scripts/webpack.server.js"
+    "client:build": "webpack --config scripts/webpack.client.js --watch",
+    "server:build": "webpack --config scripts/webpack.server.js --watch",
+    "run:all": "concurrently \"npm run client:build\" \"npm run server:build\""
   },
   "keywords": [],
   "author": "",
@@ -15,9 +16,11 @@
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
     "babel-loader": "^8.2.3",
+    "concurrently": "^6.5.1",
     "css-loader": "^6.5.1",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1",
+    "koa-static": "^5.0.0",
     "vue": "^2.6.14",
     "vue-loader": "^15.9.8",
     "vue-server-renderer": "^2.6.14",

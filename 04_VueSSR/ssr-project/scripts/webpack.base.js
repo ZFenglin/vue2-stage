@@ -7,14 +7,14 @@
 
 // vue-laoder vue-template-compiler 解析vue文件，并编译模板
 // vue-style-loader css-loader 解析css样式并插入到style标签中，vue-style-loader支持服务端渲染
-
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
 module.exports = {
     mode: 'development',
     output: {
         filename: '[name].bundle.js', // 默认就是main.js，目录默认是dist目录
+        path: path.resolve(__dirname, '../dist'),
     },
     module: {
         rules: [
@@ -47,10 +47,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, 'public/index.html')
-            // 默认名字叫index.html
-        }),
         new VueLoaderPlugin(),
     ],
 }
