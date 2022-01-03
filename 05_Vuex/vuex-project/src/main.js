@@ -4,7 +4,9 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-new Vue({
+let vm = new Vue({
+  name: 'root',
   store,
   render: h => h(App)
 }).$mount('#app')
+// 所有组件都能执行的方法 Vue.mixin({beforeCreate})，拿到store挂载到自己身上
