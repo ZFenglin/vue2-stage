@@ -1,53 +1,81 @@
 import { Vue } from "./install"
+import ModuleCollection from "./module/module-collection"
 import { forEach } from "./utils"
+
+function installModule(store, rootState, path, module) {
+    // module.state => 放到rootState的儿子里
+    if (path.length > 0) {// 儿子模块
+        // 找到对应父模块，将状态声明上去
+        let parent = path.slice(0, -1).reduce((memo, current) => {
+            return memo[current]
+        }, rootState)
+        // 对象新增属性不能导致重新更新视图
+        Vue.set(parent, path[path.length - 1], module.state)
+    }
+
+    // 需要循环当前模块的
+    module.forEachGetter((fn, key) => {
+        store.wrapperGetter[key] = function () {
+            return fn.call(store, module.state)
+        }
+    })
+    module.forEachMutation((fn, key) => {
+        store.mutations[key] = store.mutations[key] || []
+        store.mutations[key].push((payload) => {
+            return fn.call(store, module.state, payload)
+        })
+
+    })
+    module.forEachAction((fn, key) => {
+        store.actions[key] = store.actions[key] || []
+        store.actions[key].push((payload) => {
+            return fn.call(store, store, payload)
+        })
+    })
+    module.forEachChild((child, key) => {
+        installModule(store, rootState, path.concat(key), child)
+    })
+
+}
+
 class Store {
     constructor(options) {
-        // 以下这些变量都是用户传递的
-        // 用户组件中使用的$store = this
-        let { state, mutations, actions, getters, modules, strict } = options
-
-        // ----getters----
-        this.getters = {} // 取getters属性时，把他代理到计算属性上
+        // 对用户模块进行整合
+        this._modules = new ModuleCollection(options) // 对用户参数进行格式化操作
+        this.wrapperGetter = {}
+        this.mutations = {}
+        this.actions = {}
+        this.getters = {}
         const computed = {}
-        forEach(getters, (fn, key) => {
-            computed[key] = () => fn(this.state)  // 保证参数为state
-            // 当我们取getters上取值，需要对computed取值
+
+        // 没有namespaced，则getters都放在根上，action和mutations则会合并为数组
+        // 安装模块
+        let state = options.state
+        installModule(this, state, [], this._modules.root)
+
+        forEach(this.wrapperGetter, (getter, key) => {
+            computed[key] = getter
             Object.defineProperty(this.getters, key, {
-                get: () => this._vm[key], // 具备缓存功能
+                get: () => this._vm[key]
             })
         })
-        // ----mutations----
-        this.mutations = {}
-        forEach(mutations, (fn, key) => {
-            this.mutations[key] = (payload) => fn.call(this, this.state, payload)
-        })
-        // ----actions----
-        // dispatch 中派发动作，里面可以有异步逻辑，更改状态都要通过commit提交
-        this.actions = {}
-        forEach(actions, (fn, key) => {
-            this.actions[key] = (payload) => fn.call(this, this, payload)
-        })
 
-        //  这个状态再页面渲染时需要手机对应的渲染wathcer，这样状态更新才会更新视图
         this._vm = new Vue({
             data: {
-                // $开头的元素不会挂载到组件实例上，但是会挂载到_data上，减少一次代理
-                $$state: state
+                $$data: state
             },
             computed
         })
     }
-
     get state() {
-        // 依赖与vue的响应式原理
-        return this._vm._data.$$state
+        return this._vm._data.$$data
     }
-    // 利用箭头函数防止this指向问题
-    dispatch = (type, payload) => {
-        this.actions[type](payload)
+    commit = (mutationName, payload) => { // 发布订阅
+        this.mutations[mutationName] && this.mutations[mutationName].forEach(fn => fn(payload))
     }
-    commit = (type, payload) => {
-        this.mutations[type](payload)
+
+    dispatch = (actionName, payload) => {
+        this.actions[actionName] && this.actions[actionName].forEach(fn => fn(payload))
     }
 }
 
