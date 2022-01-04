@@ -63,10 +63,16 @@ const store = new Vuex.Store({
               state.age += payload
             }
           },
-        }
-      }
+          modules: {
+            d: {
+              namespaced: true,
+            }
+          }
+        },
+      },
     },
     b: {
+      namespaced: true,
       state: {
         name: 't2',
         age: 20

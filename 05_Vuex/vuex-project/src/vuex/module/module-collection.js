@@ -7,6 +7,16 @@ class ModuleCollection {
         this.root = null
         this.register([], options)
     }
+    getNamespace(path) {
+        // 返回一个字符串 a/b/c
+        let root = this.root
+        let ns = path.reduce((ns, key) => {
+            let module = root.getChild(key)
+            root = module
+            return module.namespaced ? ns + key + '/' : ns
+        }, '')
+        return ns
+    }
     register(path, rootModule) {
         let newModule = new Moudle(rootModule)
         if (path.length == 0) {

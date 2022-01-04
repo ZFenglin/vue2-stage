@@ -2,7 +2,9 @@ import { Vue } from "./install"
 import ModuleCollection from "./module/module-collection"
 import { forEach } from "./utils"
 
+// [a, b, c]
 function installModule(store, rootState, path, module) {
+    let ns = store._modules.getNamespace(path)
     // module.state => 放到rootState的儿子里
     if (path.length > 0) {// 儿子模块
         // 找到对应父模块，将状态声明上去
@@ -15,20 +17,20 @@ function installModule(store, rootState, path, module) {
 
     // 需要循环当前模块的
     module.forEachGetter((fn, key) => {
-        store.wrapperGetter[key] = function () {
+        store.wrapperGetter[ns + key] = function () {
             return fn.call(store, module.state)
         }
     })
     module.forEachMutation((fn, key) => {
-        store.mutations[key] = store.mutations[key] || []
-        store.mutations[key].push((payload) => {
+        store.mutations[ns + key] = store.mutations[ns + key] || []
+        store.mutations[ns + key].push((payload) => {
             return fn.call(store, module.state, payload)
         })
 
     })
     module.forEachAction((fn, key) => {
-        store.actions[key] = store.actions[key] || []
-        store.actions[key].push((payload) => {
+        store.actions[ns + key] = store.actions[ns + key] || []
+        store.actions[ns + key].push((payload) => {
             return fn.call(store, store, payload)
         })
     })
