@@ -1,5 +1,5 @@
 import Vue from 'vue'
-// import Vuex from 'vuex'  
+// import Vuex from 'vuex'
 import Vuex from '../vuex/index'
 Vue.use(Vuex)
 
@@ -36,8 +36,8 @@ function persists() {
 const store = new Vuex.Store({
   // vuex持久化插件
   plugins: [
-    persists(),
-    logger(),
+    // persists(),
+    // logger(),
   ],
   state: { // state => data
     name: 'zfl',
@@ -105,13 +105,6 @@ const store = new Vuex.Store({
         },
       },
     },
-    b: {
-      namespaced: true,
-      state: {
-        name: 't2',
-        age: 20
-      }
-    }
   }
 })
 

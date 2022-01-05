@@ -50,6 +50,29 @@ function installModule(store, rootState, path, module) {
 
 }
 
+function restoreVM(store, state) {
+    let oldVm = store._vm
+    store.getters = {}
+    const computed = {}
+    forEach(store.wrapperGetter, (getter, key) => {
+        computed[key] = getter
+        Object.defineProperty(store.getters, key, {
+            get: () => store._vm[key]
+        })
+    })
+
+    store._vm = new Vue({
+        data: {
+            $$data: state
+        },
+        computed
+    })
+    if (oldVm) {
+        // 重新创建实例后，需要将老的实例卸载掉
+        Vue.nextTick(() => oldVm.$destroy())
+    }
+}
+
 class Store {
     constructor(options) {
         // 对用户模块进行整合
@@ -57,29 +80,14 @@ class Store {
         this.wrapperGetter = {}
         this.mutations = {}
         this.actions = {}
-        this.getters = {}
-        const computed = {}
+
         this._subscribes = []
 
         // 没有namespaced，则getters都放在根上，action和mutations则会合并为数组
         // 安装模块
         let state = options.state
         installModule(this, state, [], this._modules.root)
-
-        forEach(this.wrapperGetter, (getter, key) => {
-            computed[key] = getter
-            Object.defineProperty(this.getters, key, {
-                get: () => this._vm[key]
-            })
-        })
-
-        this._vm = new Vue({
-            data: {
-                $$data: state
-            },
-            computed
-        })
-
+        restoreVM(this, state);
         if (options.plugins) {
             // 使用插件默认执行
             options.plugins.forEach(plugin => plugin(this))
@@ -103,6 +111,17 @@ class Store {
         this._vm._data.$$data = newState //  赋予新的状态，会被重新劫持
         // 虽然替换了状态，但是mutation getter中的state初始化的时候还是之前的状态
 
+    }
+    registerModule(path, module) {
+        if (typeof path === 'string') path = [path];
+
+        this._modules.register(path, module); // 模块的注册，将用户的数据放到树中
+        // 注册完毕后字啊进行安装
+        // 将用户的module转化的newModule传入
+        installModule(this, this.state, path, module.newModule)
+
+        // vuex内部重新注册会重新创建实例，虽然重新安装了，只解决的状态的问题，但是computed就丢失了
+        restoreVM(this, this.state);
     }
 }
 

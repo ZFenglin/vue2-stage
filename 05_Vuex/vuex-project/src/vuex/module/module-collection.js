@@ -17,8 +17,9 @@ class ModuleCollection {
         }, '')
         return ns
     }
-    register(path, rootModule) {
-        let newModule = new Moudle(rootModule)
+    register(path, rawModule) {
+        let newModule = new Moudle(rawModule)
+        rawModule.newModule = newModule //  自定义属性
         if (path.length == 0) {
             // 根模块
             this.root = newModule
@@ -31,9 +32,9 @@ class ModuleCollection {
             parent.addChild(path[path.length - 1], newModule)
         }
 
-        if (rootModule.modules) {
+        if (rawModule.modules) {
             // 存在子模块注册
-            forEach(rootModule.modules, (module, key) => {
+            forEach(rawModule.modules, (module, key) => {
                 this.register(path.concat(key), module)
             })
         }
