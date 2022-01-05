@@ -20,7 +20,9 @@ function installModule(store, rootState, path, module) {
             return memo[current]
         }, rootState)
         // 对象新增属性不能导致重新更新视图
-        Vue.set(parent, path[path.length - 1], module.state)
+        store._withCommitting(() => {
+            Vue.set(parent, path[path.length - 1], module.state)
+        })
     }
 
     // 需要循环当前模块的
@@ -32,7 +34,10 @@ function installModule(store, rootState, path, module) {
     module.forEachMutation((fn, key) => {
         store.mutations[ns + key] = store.mutations[ns + key] || []
         store.mutations[ns + key].push((payload) => {
-            let res = fn.call(store, getNewState(store, path), payload)
+            let res
+            store._withCommitting(() => {
+                res = fn.call(store, getNewState(store, path), payload)
+            })
             store._subscribes.forEach(fn => fn({ type: ns + key, payload }, store.state))
             return res
         })
@@ -63,10 +68,20 @@ function restoreVM(store, state) {
 
     store._vm = new Vue({
         data: {
-            $$data: state
+            $$state: state
         },
         computed
     })
+
+    if (store.strict) {
+        // 说明是严格模式， 原则上是异步执行
+        store._vm.$watch(() => store._vm._data.$$state, () => {
+            // 我希望状态变化后，直接能监控到，watcher都是异步的
+            // 状态变化会立即执行，不是异步
+            console.assert(store._committing, 'no mutate on mutation handler outside')
+        }, { deep: true, sync: true })
+    }
+
     if (oldVm) {
         // 重新创建实例后，需要将老的实例卸载掉
         Vue.nextTick(() => oldVm.$destroy())
@@ -80,8 +95,9 @@ class Store {
         this.wrapperGetter = {}
         this.mutations = {}
         this.actions = {}
-
         this._subscribes = []
+        this._committing = false // 默认不是在mutation中更改
+        this.strict = options.strict
 
         // 没有namespaced，则getters都放在根上，action和mutations则会合并为数组
         // 安装模块
@@ -94,7 +110,7 @@ class Store {
         }
     }
     get state() {
-        return this._vm._data.$$data
+        return this._vm._data.$$state
     }
     commit = (mutationName, payload) => { // 发布订阅
         this.mutations[mutationName] && this.mutations[mutationName].forEach(fn => fn(payload))
@@ -103,13 +119,20 @@ class Store {
     dispatch = (actionName, payload) => {
         this.actions[actionName] && this.actions[actionName].forEach(fn => fn(payload))
     }
+    _withCommitting(fn) {
+        this._committing = true
+        fn() // 函数是同步的，如果是异步的就会编程false
+        this._committing = false
+    }
     subscribe(fn) {
         this._subscribes.push(fn)
     }
     replaceState(newState) {
-        // 需要替换的状态
-        this._vm._data.$$data = newState //  赋予新的状态，会被重新劫持
-        // 虽然替换了状态，但是mutation getter中的state初始化的时候还是之前的状态
+        this._withCommitting(() => {
+            // 需要替换的状态
+            this._vm._data.$$state = newState //  赋予新的状态，会被重新劫持
+            // 虽然替换了状态，但是mutation getter中的state初始化的时候还是之前的状态
+        })
 
     }
     registerModule(path, module) {

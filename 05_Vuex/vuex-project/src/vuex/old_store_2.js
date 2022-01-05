@@ -64,13 +64,13 @@ class Store {
 
         this._vm = new Vue({
             data: {
-                $$data: state
+                $$state: state
             },
             computed
         })
     }
     get state() {
-        return this._vm._data.$$data
+        return this._vm._data.$$state
     }
     commit = (mutationName, payload) => { // 发布订阅
         this.mutations[mutationName] && this.mutations[mutationName].forEach(fn => fn(payload))

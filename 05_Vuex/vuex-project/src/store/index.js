@@ -36,7 +36,7 @@ function persists() {
 const store = new Vuex.Store({
   // vuex持久化插件
   plugins: [
-    // persists(),
+    persists(),
     // logger(),
   ],
   state: { // state => data
@@ -66,7 +66,7 @@ const store = new Vuex.Store({
       return state.age + 1
     }
   },
-  strict: true, // 严格模式，不允许在组件中修改state
+  strict: true, // 严格模式，不允许在组件中修改state // 不是再mutation中更改则会报错
   modules: {
     a: {
       namespaced: true, // 命名空间, 解决名称冲突问题
