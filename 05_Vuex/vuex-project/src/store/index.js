@@ -1,10 +1,44 @@
 import Vue from 'vue'
-// import Vuex from 'vuex'
-import Vuex from '../vuex/index'
-
+import Vuex from 'vuex'
+// import Vuex from '../vu ex/index'
+// import logger from 'vuex/dist/logger'
 Vue.use(Vuex)
 
+// // logger插件
+// function logger() {
+//   return function (store) {
+//     let prevState = JSON.stringify(store.state)
+//     store.subscribe((mutation, state) => {
+//       // 所有更新操作都基于mutation,状态变化通过mutation
+//       // 如果直接受到的更改状态，此subscribe是不会执行的(只有mutation的会触发通知)
+//       console.log('prevState', prevState)
+//       console.log('mutation', mutation)
+//       console.log('currentState', JSON.stringify(state))
+
+//       prevState = JSON.stringify(state)
+//     })
+//   }
+// }
+
+function persists() {
+  // 每次状态变化存至localstorge
+  return function (store) {
+    let localState = JSON.parse(localStorage.getItem('VUEX:STATE'))
+    if (localState) {
+      store.replaceState(localState)
+    }
+    store.subscribe((mutations, rooState) => {
+      localStorage.setItem('VUEX:STATE', JSON.stringify(rooState))
+    })
+  }
+}
+
+
 const store = new Vuex.Store({
+  // vuex持久化插件
+  plugins: [
+    persists()
+  ],
   state: { // state => data
     name: 'zfl',
     age: 26,
