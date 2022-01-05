@@ -2,6 +2,14 @@ import { Vue } from "./install"
 import ModuleCollection from "./module/module-collection"
 import { forEach } from "./utils"
 
+// 设置新状态
+function getNewState(store, path) {
+    let res = path.reduce((memo, current) => {
+        return memo[current]
+    }, store.state)
+    return res
+}
+
 // [a, b, c]
 function installModule(store, rootState, path, module) {
     let ns = store._modules.getNamespace(path)
@@ -18,13 +26,15 @@ function installModule(store, rootState, path, module) {
     // 需要循环当前模块的
     module.forEachGetter((fn, key) => {
         store.wrapperGetter[ns + key] = function () {
-            return fn.call(store, module.state)
+            return fn.call(store, getNewState(store, path))
         }
     })
     module.forEachMutation((fn, key) => {
         store.mutations[ns + key] = store.mutations[ns + key] || []
         store.mutations[ns + key].push((payload) => {
-            return fn.call(store, module.state, payload)
+            let res = fn.call(store, getNewState(store, path), payload)
+            store._subscribes.forEach(fn => fn({ type: ns + key, payload }, store.state))
+            return res
         })
 
     })
@@ -49,6 +59,7 @@ class Store {
         this.actions = {}
         this.getters = {}
         const computed = {}
+        this._subscribes = []
 
         // 没有namespaced，则getters都放在根上，action和mutations则会合并为数组
         // 安装模块
@@ -68,6 +79,11 @@ class Store {
             },
             computed
         })
+
+        if (options.plugins) {
+            // 使用插件默认执行
+            options.plugins.forEach(plugin => plugin(this))
+        }
     }
     get state() {
         return this._vm._data.$$data
@@ -78,6 +94,15 @@ class Store {
 
     dispatch = (actionName, payload) => {
         this.actions[actionName] && this.actions[actionName].forEach(fn => fn(payload))
+    }
+    subscribe(fn) {
+        this._subscribes.push(fn)
+    }
+    replaceState(newState) {
+        // 需要替换的状态
+        this._vm._data.$$data = newState //  赋予新的状态，会被重新劫持
+        // 虽然替换了状态，但是mutation getter中的state初始化的时候还是之前的状态
+
     }
 }
 
