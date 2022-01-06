@@ -36,8 +36,8 @@ const routes = [
 ]
 // 最终生成一个vue-router实例
 const router = new VueRouter({
-  mode: 'history',
-  // mode: 'hash', // #丑，但是兼容性好 history好看但是需要服务器支持，在开发环境内部，提供了historyFallback
+  // mode: 'history',
+  mode: 'hash', // #丑，但是兼容性好 history好看但是需要服务器支持，在开发环境内部，提供了historyFallback
   routes,
 })
 
