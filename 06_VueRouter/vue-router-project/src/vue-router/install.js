@@ -8,6 +8,7 @@ export default function install(_Vue) {
     Vue.mixin({
         beforeCreate() {
             // 给root实例增加_router属性，所有组件从这里取
+            // 路由的实例
             if (this.$options.router) {
                 // 根组件
                 this._router = this.$options.router
@@ -15,6 +16,8 @@ export default function install(_Vue) {
 
                 // 初始化路由逻辑，放这里只初始化一次
                 this._router.init(this) // 整个应用的根
+                // Vuex中的state在哪里使用就会收集对应watcher
+                Vue.util.defineReactive(this, '_route', this._router.history.current)
             } else {
                 // 子组件
                 this._routerRoot = this.$parent && this.$parent._routerRoot
@@ -24,11 +27,15 @@ export default function install(_Vue) {
     })
     // _routerRoot 是根实例， 根实例上有_router属性
     // 给所有的组件都添加$router属性和$route属性
-    Object.defineProperty(Vue.prototype, '$router', {
-        get() { }
+    Object.defineProperty(Vue.prototype, '$router', { // 方法
+        get() {
+            return this._routerRoot._router
+        }
     })
-    Object.defineProperty(Vue.prototype, '$route', {
-        get() { }
+    Object.defineProperty(Vue.prototype, '$route', { // 属性
+        get() {
+            return this._routerRoot._route
+        }
     })
     Vue.component('router-link', RouterLink)
     Vue.component('router-view', RouterView)

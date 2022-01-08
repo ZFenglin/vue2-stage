@@ -32,6 +32,16 @@ class VueRouter {
         return this.matcher.match(location)
     }
 
+    push(loaction) {
+        // 跳转页面
+        this.history.transitionTo(loaction, () => {
+            // 对应 h5
+            // pushState
+
+            window.location.hash = loaction // 更改hash值
+        })
+    }
+
     init(app) {
         const history = this.history // 当期管理路由
         // hash => hashchange 但是浏览器支持popstate，则优先采用popstate
@@ -44,6 +54,10 @@ class VueRouter {
             history.setUpListeners()
         }
         history.transitionTo(history.getCurrentLocation(), setUpListeners)
+        history.listen((route) => {
+            // 监听current变化，则_route重新赋值
+            app._route = route
+        })
     }
 }
 
