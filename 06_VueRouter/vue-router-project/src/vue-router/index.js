@@ -33,13 +33,10 @@ class VueRouter {
         return this.matcher.match(location)
     }
 
-    push(loaction) {
+    push(location) {
         // 跳转页面
-        this.history.transitionTo(loaction, () => {
-            // 对应 h5
-            // pushState
-
-            window.location.hash = loaction // 更改hash值
+        this.history.transitionTo(location, () => {
+            this.history.pushState(location)
         })
     }
 
