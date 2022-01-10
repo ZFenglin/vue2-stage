@@ -3,6 +3,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import 'lib-flexible' // 设置根字体
 
 Vue.config.productionTip = false
 
