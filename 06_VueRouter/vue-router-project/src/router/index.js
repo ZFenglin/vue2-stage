@@ -41,4 +41,15 @@ const router = new VueRouter({
   routes,
 })
 
+router.beforeEach((to, from, next) => {
+  // 全局钩子 路由钩子 组件钩子
+  console.log(1, to, from)
+  next()
+})
+router.beforeEach((to, from, next) => {
+  // 全局钩子 路由钩子 组件钩子
+  console.log(2, to, from)
+  next()
+})
+
 export default router

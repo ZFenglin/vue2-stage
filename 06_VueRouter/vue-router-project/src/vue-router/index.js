@@ -26,6 +26,7 @@ class VueRouter {
                 this.history = new HTML5History(this)
                 break;
         }
+        this.beforeHooks = []
     }
 
     match(location) {
@@ -59,8 +60,13 @@ class VueRouter {
             app._route = route
         })
     }
+    beforeEach(fn) {
+        this.beforeHooks.push(fn)
+    }
 }
 
 VueRouter.install = install
 
 export default VueRouter;
+
+// 路由钩子的执行思路和koa => express 中间件原理的是一样的 把添加的钩子放置数组中
