@@ -14,4 +14,13 @@
   margin: 0;
   padding: 0;
 }
+#app {
+  .van-dropdown-menu__bar {
+    height: 48px;
+    background-color: $background;
+  }
+  .van-dropdown-menu__title {
+    color: $color;
+  }
+}
 </style>
