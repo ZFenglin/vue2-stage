@@ -9,7 +9,7 @@ files.keys().forEach(key => {
     let [namespace, type] = path.split('/');
     if (!modules[namespace]) {
         modules[namespace] = {
-            namespace: true, // 都增加命名空间
+            namespaced: true, // 都增加命名空间
         };
     }
     modules[namespace][type] = files(key).default; // 获取文件导出结果
