@@ -1,4 +1,6 @@
 import axios from 'axios'
+import store from '@/store/index'
+import * as Types from '@/store/modules/action-types'
 
 class HttpRequest {
     constructor() {
@@ -19,7 +21,8 @@ class HttpRequest {
             let CancelToken = axios.CancelToken
             new CancelToken((c) => {
                 // c就是当前取消请求的token
-
+                // 每次执行时设置token
+                store.commit([Types.SET_TOKEN], c)
             })
             this.queue[url] = true
             return config
