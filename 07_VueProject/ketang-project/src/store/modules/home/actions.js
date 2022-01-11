@@ -1,2 +1,10 @@
-const homeActions = {}
+import * as Types from '@/store/modules/action-types.js'
+import { fecthSlides } from '@/api/home.js'
+
+const homeActions = {
+    async [Types.SET_SLIDES](context, payload) {
+        console.log(context, payload)
+        let slides = await fecthSlides()
+    }
+}
 export default homeActions

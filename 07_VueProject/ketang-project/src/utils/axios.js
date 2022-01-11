@@ -58,7 +58,7 @@ class HttpRequest {
         return instance(config) // 产生的是一个的 promise
     }
 
-    get(url, data) {
+    get(url, data = {}) {
         return this.request({
             url,
             method: 'get',
@@ -66,7 +66,7 @@ class HttpRequest {
         })
     }
 
-    post(url, data) {
+    post(url, data = {}) {
         return this.request({
             url,
             method: 'post',
@@ -75,3 +75,5 @@ class HttpRequest {
     }
 
 }
+
+export default new HttpRequest
