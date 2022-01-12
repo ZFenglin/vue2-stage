@@ -38,5 +38,19 @@ export default {
             }
         }
     },
-
+    'menu-perission': async (to, from, next) => {
+        // 这里需要对权限进行处理，动态路由添加
+        if (store.state.user.hasPermission) {
+            // 1. 要求用户登录，才能拿去菜单的权限
+            if (!store.state.user.menuPermission) {
+                // 2. 如果没有菜单权限，则获取菜单权限
+                await store.dispatch(`user/${Types.ADD_ROUTE}`) // 路由动态加载，此时组件是异步的 我希望组等待组件加载完成后跳转过去
+                next({ ...to, repalce: true }) // 页面重新加载一次, 否则路径再次加载会白屏
+            } else {
+                next()
+            }
+        } else {
+            next()
+        }
+    }
 }

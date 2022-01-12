@@ -12,6 +12,19 @@
         <span>{{ $store.state.user.username }}</span>
       </template>
     </div>
+
+    <div v-if="$store.state.user.menuPermission">
+      <router-link
+        v-for="item in $store.state.user.authList"
+        :to="`/profile/${item}-manager`"
+        :key="item"
+        >{{ item }}</router-link
+      >
+    </div>
+    <router-view></router-view>
+
+    <van-button v-has="'edit'">编辑</van-button>
+    <van-button v-has="'remove'">删除</van-button>
   </div>
 </template>
 
