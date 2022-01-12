@@ -11,14 +11,22 @@
 
 <script>
 import FormSubmit from "@/components/form-submit";
-
+import { createNamespacedHelpers } from "vuex";
+import * as Types from "@/store/modules/action-types.js";
+let { mapActions } = createNamespacedHelpers("user");
 export default {
   components: {
     FormSubmit,
   },
   methods: {
+    ...mapActions([Types.SET_LOGIN]),
     onSubmit(data) {
-      console.log("登录", data);
+      try {
+        this[Types.SET_LOGIN](data);
+        this.$router.push("/profile");
+      } catch (error) {
+        console.log("失败", error);
+      }
     },
   },
 };

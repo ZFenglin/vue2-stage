@@ -17,6 +17,10 @@ class HttpRequest {
             if (Object.keys(this.queue).length == 0) {
                 // 开启loading
             }
+            let token = localStorage.getItem('token')
+            if (token) {
+                config.headers.authorization = token
+            }
             // 可以记录请求的取消函数
             let CancelToken = axios.CancelToken
             new CancelToken((c) => {

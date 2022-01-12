@@ -6,5 +6,10 @@ export default {
     'clear_token': async (to, from, next) => {
         store.commit(Types.CLEAR_TOKEN)
         await next()
+    },
+    'login_permission': async (to, from, next) => {
+        // 登录校验
+        await store.dispatch(`user/${Types.VALIDATE}`)
+        next()
     }
 }

@@ -2,9 +2,14 @@
   <div class="profile">
     <van-nav-bar title="个人中心"></van-nav-bar>
     <div class="profile-info">
-      <template>
+      {{ $store.state.user.name }} {{ $store.state.user.hasPermssion }}
+      <template v-if="!$store.state.user.hasPermission">
         <img src="@/assets/logo.png" alt="" />
         <van-button size="small" to="/login">登录</van-button>
+      </template>
+      <template v-else>
+        <img src="@/assets/logo.png" alt="" />
+        <span>{{ $store.state.user.username }}</span>
       </template>
     </div>
   </div>

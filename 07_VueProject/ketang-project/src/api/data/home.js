@@ -1,0 +1,1 @@
+export const slider = [{ img: '1', index: 1 }, { img: '2', index: 2 }, { img: '3', index: 3 }]
