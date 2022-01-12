@@ -17,6 +17,9 @@ const routes = [
     path: '/lesson',
     name: 'lesson',
     component: loadable(() => import('@/views/lesson/index.vue')), // 默认白页，加载完毕后再去渲染
+    meta: {
+      needLogin: true,
+    }
   },
   {
     path: '/profile',
