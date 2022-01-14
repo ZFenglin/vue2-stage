@@ -70,7 +70,7 @@ function createKeyToOldIdx(children, beginIdx, endIdx) {
 export function createPatchFunction(backend) {
   let i, j
   const cbs = {}
-
+  // nodeOps节点操作方法，modules为refs, directives还有src/platforms/web/compiler/modules下的方法
   const { modules, nodeOps } = backend
 
   for (i = 0; i < hooks.length; ++i) {
@@ -121,7 +121,7 @@ export function createPatchFunction(backend) {
   }
 
   let creatingElmInVPre = 0
-
+  // 创建真实DOM
   function createElm(
     vnode,
     insertedVnodeQueue,
@@ -189,7 +189,7 @@ export function createPatchFunction(backend) {
         }
       } else {
         createChildren(vnode, children, insertedVnodeQueue)
-        if (isDef(data)) {
+        if (isDef(data)) { // 如果自己有属性，会调用modlues对应的钩子函数
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
         insert(parentElm, vnode.elm, refElm)
@@ -300,7 +300,7 @@ export function createPatchFunction(backend) {
     }
     return isDef(vnode.tag)
   }
-
+  // 执行创建的modlues的钩子
   function invokeCreateHooks(vnode, insertedVnodeQueue) {
     for (let i = 0; i < cbs.create.length; ++i) {
       cbs.create[i](emptyNode, vnode)

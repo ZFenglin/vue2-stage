@@ -153,7 +153,7 @@ export function createComponent (
   resolveConstructorOptions(Ctor)
 
   // transform component v-model data into props & events
-  if (isDef(data.model)) {
+  if (isDef(data.model)) { // 处理model
     transformModel(Ctor.options, data)
   }
 
@@ -252,10 +252,10 @@ function mergeHook (f1: any, f2: any): Function {
 // transform component v-model info (value and callback) into
 // prop and event handler respectively.
 function transformModel (options, data: any) {
-  const prop = (options.model && options.model.prop) || 'value'
-  const event = (options.model && options.model.event) || 'input'
-  ;(data.attrs || (data.attrs = {}))[prop] = data.model.value
-  const on = data.on || (data.on = {})
+  const prop = (options.model && options.model.prop) || 'value' // 默认采用value
+  const event = (options.model && options.model.event) || 'input' // 默认采用input事件
+  ;(data.attrs || (data.attrs = {}))[prop] = data.model.value // 绑定属性
+  const on = data.on || (data.on = {}) // 绑定事件
   const existing = on[event]
   const callback = data.model.callback
   if (isDef(existing)) {

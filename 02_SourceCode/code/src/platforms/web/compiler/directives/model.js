@@ -16,6 +16,7 @@ export default function model (
   dir: ASTDirective,
   _warn: Function
 ): ?boolean {
+  // 默认model处理
   warn = _warn
   const value = dir.value
   const modifiers = dir.modifiers
@@ -129,6 +130,7 @@ function genDefaultModel (
   value: string,
   modifiers: ?ASTModifiers
 ): ?boolean {
+  // 默认元素model处理
   const type = el.attrsMap.type
 
   // warn if v-bind:value conflicts with v-model

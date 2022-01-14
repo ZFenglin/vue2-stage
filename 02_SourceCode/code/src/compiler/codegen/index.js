@@ -62,9 +62,9 @@ export function genElement (el: ASTElement, state: CodegenState): string {
     return genStatic(el, state)
   } else if (el.once && !el.onceProcessed) {
     return genOnce(el, state)
-  } else if (el.for && !el.forProcessed) {
+  } else if (el.for && !el.forProcessed) { // v-for
     return genFor(el, state)
-  } else if (el.if && !el.ifProcessed) {
+  } else if (el.if && !el.ifProcessed) { // v-if
     return genIf(el, state)
   } else if (el.tag === 'template' && !el.slotTarget && !state.pre) {
     return genChildren(el, state) || 'void 0'
@@ -164,14 +164,14 @@ function genIfConditions (
   }
 
   const condition = conditions.shift()
-  if (condition.exp) {
-    return `(${condition.exp})?${
+  if (condition.exp) { // 如果有表达式
+    return `(${condition.exp})?${ // 拼接表达式
       genTernaryExp(condition.block)
     }:${
       genIfConditions(conditions, state, altGen, altEmpty)
     }`
   } else {
-    return `${genTernaryExp(condition.block)}`
+    return `${genTernaryExp(condition.block)}` // 如果没有表达式，直接生成元素如v-else
   }
 
   // v-if with v-once should generate code like (a)?_m(0):_m(1)
@@ -190,13 +190,13 @@ export function genFor (
   altGen?: Function,
   altHelper?: string
 ): string {
-  const exp = el.for
+  const exp = el.for // 获取表达式arr
   const alias = el.alias
   const iterator1 = el.iterator1 ? `,${el.iterator1}` : ''
   const iterator2 = el.iterator2 ? `,${el.iterator2}` : ''
 
   if (process.env.NODE_ENV !== 'production' &&
-    state.maybeComponent(el) &&
+    state.maybeComponent(el) && // slot和template不能进行v-for
     el.tag !== 'slot' &&
     el.tag !== 'template' &&
     !el.key
@@ -210,7 +210,7 @@ export function genFor (
     )
   }
 
-  el.forProcessed = true // avoid recursion
+  el.forProcessed = true // avoid recursion 防止四循环
   return `${altHelper || '_l'}((${exp}),` +
     `function(${alias}${iterator1}${iterator2}){` +
       `return ${(altGen || genElement)(el, state)}` +
@@ -316,15 +316,15 @@ function genDirectives (el: ASTElement, state: CodegenState): string | void {
   for (i = 0, l = dirs.length; i < l; i++) {
     dir = dirs[i]
     needRuntime = true
-    const gen: DirectiveFunction = state.directives[dir.name]
+    const gen: DirectiveFunction = state.directives[dir.name]// 调用directive的方法
     if (gen) {
       // compile-time directive that manipulates AST.
       // returns true if it also needs a runtime counterpart.
       needRuntime = !!gen(el, dir, state.warn)
     }
     if (needRuntime) {
-      hasRuntime = true
-      res += `{name:"${dir.name}",rawName:"${dir.rawName}"${
+      hasRuntime = true // 是否需要运行时
+      res += `{name:"${dir.name}",rawName:"${dir.rawName}"${ 
         dir.value ? `,value:(${dir.value}),expression:${JSON.stringify(dir.value)}` : ''
       }${
         dir.arg ? `,arg:${dir.isDynamicArg ? dir.arg : `"${dir.arg}"`}` : ''

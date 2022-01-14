@@ -13,7 +13,7 @@ export default {
 }
 
 function updateDirectives (oldVnode: VNodeWithData, vnode: VNodeWithData) {
-  if (oldVnode.data.directives || vnode.data.directives) {
+  if (oldVnode.data.directives || vnode.data.directives) { // 如果有指令，创建||更新
     _update(oldVnode, vnode)
   }
 }
@@ -21,17 +21,17 @@ function updateDirectives (oldVnode: VNodeWithData, vnode: VNodeWithData) {
 function _update (oldVnode, vnode) {
   const isCreate = oldVnode === emptyNode
   const isDestroy = vnode === emptyNode
-  const oldDirs = normalizeDirectives(oldVnode.data.directives, oldVnode.context)
-  const newDirs = normalizeDirectives(vnode.data.directives, vnode.context)
+  const oldDirs = normalizeDirectives(oldVnode.data.directives, oldVnode.context) // 获取指令名字
+  const newDirs = normalizeDirectives(vnode.data.directives, vnode.context) // 解析出新指令
 
   const dirsWithInsert = []
   const dirsWithPostpatch = []
 
-  let key, oldDir, dir
+  let key, oldDir, dir // 获取对应指令，调用对应指令的钩子方法
   for (key in newDirs) {
     oldDir = oldDirs[key]
     dir = newDirs[key]
-    if (!oldDir) {
+    if (!oldDir) { // 没有旧的进行绑定
       // new directive, bind
       callHook(dir, 'bind', vnode, oldVnode)
       if (dir.def && dir.def.inserted) {
@@ -42,19 +42,19 @@ function _update (oldVnode, vnode) {
       dir.oldValue = oldDir.value
       dir.oldArg = oldDir.arg
       callHook(dir, 'update', vnode, oldVnode)
-      if (dir.def && dir.def.componentUpdated) {
+      if (dir.def && dir.def.componentUpdated) { // 如果有更新方法，推到队列中
         dirsWithPostpatch.push(dir)
       }
     }
   }
 
-  if (dirsWithInsert.length) {
+  if (dirsWithInsert.length) { // 如果有insert钩子，生成调用方法
     const callInsert = () => {
       for (let i = 0; i < dirsWithInsert.length; i++) {
-        callHook(dirsWithInsert[i], 'inserted', vnode, oldVnode)
+        callHook(dirsWithInsert[i], 'inserted', vnode, oldVnode) // 调用insert钩子
       }
     }
-    if (isCreate) {
+    if (isCreate) { // merageCallInsert
       mergeVNodeHook(vnode, 'insert', callInsert)
     } else {
       callInsert()
