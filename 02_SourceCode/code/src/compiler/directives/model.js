@@ -39,7 +39,7 @@ export function genAssignmentCode (
 ): string {
   const res = parseModel(value)
   if (res.key === null) {
-    return `${value}=${assignment}`
+    return `${value}=${assignment}` // :value.async
   } else {
     return `$set(${res.exp}, ${res.key}, ${assignment})`
   }

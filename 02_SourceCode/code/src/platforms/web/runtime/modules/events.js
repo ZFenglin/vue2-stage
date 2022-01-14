@@ -81,7 +81,7 @@ function add (
       }
     }
   }
-  target.addEventListener(
+  target.addEventListener( // 绑定事件
     name,
     handler,
     supportsPassive
@@ -102,7 +102,7 @@ function remove (
     capture
   )
 }
-
+// 更新DOM事件
 function updateDOMListeners (oldVnode: VNodeWithData, vnode: VNodeWithData) {
   if (isUndef(oldVnode.data.on) && isUndef(vnode.data.on)) {
     return

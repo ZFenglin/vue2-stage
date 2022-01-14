@@ -109,16 +109,16 @@ export function addHandler (
   }
 
   // check capture modifier
-  if (modifiers.capture) {
-    delete modifiers.capture
+  if (modifiers.capture) { // 如果capture用!标记
+    delete modifiers.capture // 无法绑定事件 只是做编译 绑定时间在运行时
     name = prependModifierMarker('!', name, dynamic)
   }
-  if (modifiers.once) {
+  if (modifiers.once) { // 如果once用~标记
     delete modifiers.once
     name = prependModifierMarker('~', name, dynamic)
   }
   /* istanbul ignore if */
-  if (modifiers.passive) {
+  if (modifiers.passive) { // 如果passive用&标记
     delete modifiers.passive
     name = prependModifierMarker('&', name, dynamic)
   }

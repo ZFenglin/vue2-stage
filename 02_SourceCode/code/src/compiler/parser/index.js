@@ -801,12 +801,12 @@ function processAttrs (el) {
             name = camelize(name)
           }
           if (modifiers.sync) {
-            syncGen = genAssignmentCode(value, `$event`)
+            syncGen = genAssignmentCode(value, `$event`) // {value: xxx}
             if (!isDynamic) {
               addHandler(
                 el,
-                `update:${camelize(name)}`,
-                syncGen,
+                `update:${camelize(name)}`, // udpate:value = xxx
+                syncGen, 
                 null,
                 false,
                 warn,
@@ -845,7 +845,7 @@ function processAttrs (el) {
         } else {
           addAttr(el, name, value, list[i], isDynamic)
         }
-      } else if (onRE.test(name)) { // v-on
+      } else if (onRE.test(name)) { // v-on 绑定事件 @click.stop
         name = name.replace(onRE, '')
         isDynamic = dynamicArgRE.test(name)
         if (isDynamic) {
