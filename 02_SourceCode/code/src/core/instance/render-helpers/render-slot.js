@@ -11,7 +11,7 @@ export function renderSlot (
   props: ?Object,
   bindObject: ?Object
 ): ?Array<VNode> {
-  const scopedSlotFn = this.$scopedSlots[name]
+  const scopedSlotFn = this.$scopedSlots[name] // $scopedSlots
   let nodes
   if (scopedSlotFn) {
     // scoped slot
@@ -28,7 +28,8 @@ export function renderSlot (
   } else {
     nodes =
       this.$slots[name] ||
-      (typeof fallbackRender === 'function' ? fallbackRender() : fallbackRender)
+      (typeof fallbackRender === 'function' ? fallbackRender() : fallbackRender) // 去$slots查找对应的虚拟节点
+      // 调用函数渲染插槽
   }
 
   const target = props && props.slot

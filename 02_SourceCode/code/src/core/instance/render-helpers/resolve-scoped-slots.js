@@ -17,7 +17,7 @@ export function resolveScopedSlots (
       if (slot.proxy) {
         slot.fn.proxy = true
       }
-      res[slot.key] = slot.fn
+      res[slot.key] = slot.fn // {default： fn}
     }
   }
   if (contentHashKey) {

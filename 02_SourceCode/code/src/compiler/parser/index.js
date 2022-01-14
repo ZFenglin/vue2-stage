@@ -600,7 +600,7 @@ function processOnce (el) {
 
 // handle content being passed to a component as slot,
 // e.g. <template slot="xxx">, <div slot-scope="xxx">
-function processSlotContent (el) {
+function processSlotContent (el) { // 处理插槽
   let slotScope
   if (el.tag === 'template') {
     slotScope = getAndRemoveAttr(el, 'scope')
@@ -631,14 +631,14 @@ function processSlotContent (el) {
   }
 
   // slot="xxx"
-  const slotTarget = getBindingAttr(el, 'slot')
-  if (slotTarget) {
+  const slotTarget = getBindingAttr(el, 'slot') // 获取当前属性的slot
+  if (slotTarget) { // 增加slotTarget属性
     el.slotTarget = slotTarget === '""' ? '"default"' : slotTarget
     el.slotTargetDynamic = !!(el.attrsMap[':slot'] || el.attrsMap['v-bind:slot'])
     // preserve slot as an attribute for native shadow DOM compat
     // only for non-scoped slots.
     if (el.tag !== 'template' && !el.slotScope) {
-      addAttr(el, 'slot', slotTarget, getRawBindingAttr(el, 'slot'))
+      addAttr(el, 'slot', slotTarget, getRawBindingAttr(el, 'slot')) // 在attrsMap上增加slot属性
     }
   }
 

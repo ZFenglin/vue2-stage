@@ -265,7 +265,7 @@ export function genData (el: ASTElement, state: CodegenState): string {
   }
   // slot target
   // only for non-scoped slots
-  if (el.slotTarget && !el.slotScope) {
+  if (el.slotTarget && !el.slotScope) { // 插槽属性处理
     data += `slot:${el.slotTarget},`
   }
   // scoped slots
@@ -545,6 +545,7 @@ export function genComment (comment: ASTText): string {
 }
 
 function genSlot (el: ASTElement, state: CodegenState): string {
+  // 插槽代码生成
   const slotName = el.slotName || '"default"'
   const children = genChildren(el, state)
   let res = `_t(${slotName}${children ? `,function(){return ${children}}` : ''}`

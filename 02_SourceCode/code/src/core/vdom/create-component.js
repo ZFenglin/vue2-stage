@@ -127,7 +127,7 @@ export function createComponent (
     return
   }
 
-  // async component
+  // async component 异步组件
   let asyncFactory
   if (isUndef(Ctor.cid)) {
     asyncFactory = Ctor
@@ -189,10 +189,10 @@ export function createComponent (
 
   // return a placeholder vnode
   const name = Ctor.options.name || tag
-  const vnode = new VNode( /// 创建虚拟节点 componentOptions
+  const vnode = new VNode( /// 创建虚拟节点 componentOptions 
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
     data, undefined, undefined, undefined, context,
-    { Ctor, propsData, listeners, tag, children }, /// 包含组件的属性和事件
+    { Ctor, propsData, listeners, tag, children }, /// 包含组件的属性和事件 插槽作为children放在componentOptions上
     asyncFactory
   )
 

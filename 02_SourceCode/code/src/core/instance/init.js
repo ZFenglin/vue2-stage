@@ -33,7 +33,7 @@ export function initMixin (Vue: Class<Component>) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
       // internal component options needs special treatment.
-      initInternalComponent(vm, options)
+      initInternalComponent(vm, options) // 此时有了_renderChildern
     } else {
       vm.$options = mergeOptions( /// Vue.options 和自己的属性合并
         resolveConstructorOptions(vm.constructor),
@@ -51,7 +51,7 @@ export function initMixin (Vue: Class<Component>) {
     vm._self = vm
     initLifecycle(vm) /// 初始化组件的父子关系 $parent $childern 实现原理
     initEvents(vm) 
-    initRender(vm) /// 初始化插槽 _c $attrs $listeners $slots
+    initRender(vm) /// 初始化插槽 _c $attrs $listeners $slots, 将当前的儿子放到$slots
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props /// inject/provider 隔代传输数据，不建议开发使用，因为值不清楚由谁提供
     initState(vm) // 处理props和data
