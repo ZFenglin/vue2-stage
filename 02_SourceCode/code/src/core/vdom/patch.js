@@ -29,7 +29,7 @@ import {
 } from '../util/index'
 
 export const emptyNode = new VNode('', {}, [])
-
+// vue内部名字
 const hooks = ['create', 'activate', 'update', 'remove', 'destroy']
 
 function sameVnode(a, b) {
@@ -303,6 +303,7 @@ export function createPatchFunction(backend) {
   // 执行创建的modlues的钩子
   function invokeCreateHooks(vnode, insertedVnodeQueue) {
     for (let i = 0; i < cbs.create.length; ++i) {
+      // cbs.create执行
       cbs.create[i](emptyNode, vnode)
     }
     i = vnode.data.hook // Reuse variable
@@ -797,7 +798,7 @@ export function createPatchFunction(backend) {
         }
       }
     }
-
+    // 调用插入的钩子 => callInsert
     invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }

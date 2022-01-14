@@ -5,16 +5,16 @@ import { resolveAsset, handleError } from 'core/util/index'
 import { mergeVNodeHook } from 'core/vdom/helpers/index'
 
 export default {
-  create: updateDirectives,
+  create: updateDirectives, // create钩子，指令创建时调用
   update: updateDirectives,
   destroy: function unbindDirectives (vnode: VNodeWithData) {
     updateDirectives(vnode, emptyNode)
   }
 }
-
+// bind inserted update
 function updateDirectives (oldVnode: VNodeWithData, vnode: VNodeWithData) {
   if (oldVnode.data.directives || vnode.data.directives) { // 如果有指令，创建||更新
-    _update(oldVnode, vnode)
+    _update(oldVnode, vnode) // 刚刚创建一个元素 ，并且没有插入到页面中
   }
 }
 
@@ -33,8 +33,8 @@ function _update (oldVnode, vnode) {
     dir = newDirs[key]
     if (!oldDir) { // 没有旧的进行绑定
       // new directive, bind
-      callHook(dir, 'bind', vnode, oldVnode)
-      if (dir.def && dir.def.inserted) {
+      callHook(dir, 'bind', vnode, oldVnode) // 调用bind说明指令绑定上了 但是无法拿到具体dom 操作输入框获取焦点还不行
+      if (dir.def && dir.def.inserted) { // 用户写了inserted会将对应函数存起来
         dirsWithInsert.push(dir)
       }
     } else {
@@ -49,13 +49,14 @@ function _update (oldVnode, vnode) {
   }
 
   if (dirsWithInsert.length) { // 如果有insert钩子，生成调用方法
-    const callInsert = () => {
+    const callInsert = () => { // 等会插入页面后调用
       for (let i = 0; i < dirsWithInsert.length; i++) {
         callHook(dirsWithInsert[i], 'inserted', vnode, oldVnode) // 调用insert钩子
+        // 走到用户的inserted方法
       }
     }
-    if (isCreate) { // merageCallInsert
-      mergeVNodeHook(vnode, 'insert', callInsert)
+    if (isCreate) { // merageCallInsert 到 insert钩子中
+      mergeVNodeHook(vnode, 'insert', callInsert) // 两个函数的合并
     } else {
       callInsert()
     }
@@ -69,7 +70,7 @@ function _update (oldVnode, vnode) {
     })
   }
 
-  if (!isCreate) {
+  if (!isCreate) { // 销毁逻辑
     for (key in oldDirs) {
       if (!newDirs[key]) {
         // no longer present, unbind
