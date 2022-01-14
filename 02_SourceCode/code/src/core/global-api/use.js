@@ -16,14 +16,14 @@ export function initUse (Vue: GlobalAPI) {
     }
 
     // additional parameters
-    const args = toArray(arguments, 1) /// Array.from(arguments).slice(1)
-    args.unshift(this) /// [Vue.options,a,b,c]
-    if (typeof plugin.install === 'function') {
+    const args = toArray(arguments, 1) /// Array.from(arguments).slice(1) 除了第一项的参数的其他整合为数组
+    args.unshift(this) /// [Vue.options,a,b,c] // 将Vue放入数组中
+    if (typeof plugin.install === 'function') {// 调用install方法
       plugin.install.apply(plugin, args)
-    } else if (typeof plugin === 'function') {
+    } else if (typeof plugin === 'function') { // 直接调用方法
       plugin.apply(null, args)
     }
-    installedPlugins.push(plugin)
+    installedPlugins.push(plugin) // 缓存插件
     return this
   }
 }
