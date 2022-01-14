@@ -64,8 +64,8 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // components with in Weex's multi-instance scenarios.
   Vue.options._base = Vue /// vue创建函数实例
 
-  /// keep-alive是全局组件 Vue.component Vue.options.component
-  extend(Vue.options.components, builtInComponents) /// keep-alive
+  /// keep-alive是全局组件 Vue.component Vue.options.component 默认初始化全局API，会构建keep-alive组件
+  extend(Vue.options.components, builtInComponents) /// keep-alive 处理
 
   initUse(Vue) /// vue.use 常问
   initMixin(Vue) /// vue.mixin => mergeOptions

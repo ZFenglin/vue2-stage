@@ -58,12 +58,12 @@ const patternTypes: Array<Function> = [String, RegExp, Array]
 
 export default {
   name: 'keep-alive',
-  abstract: true,
+  abstract: true, // 不会放到父子关系中
 
   props: {
-    include: patternTypes,
-    exclude: patternTypes,
-    max: [String, Number]
+    include: patternTypes, // 白名单
+    exclude: patternTypes, // 黑名单
+    max: [String, Number] // 缓存个数
   },
 
   methods: {
@@ -76,9 +76,9 @@ export default {
           tag,
           componentInstance,
         }
-        keys.push(keyToCache)
+        keys.push(keyToCache) // 缓存组件
         // prune oldest entry
-        if (this.max && keys.length > parseInt(this.max)) {
+        if (this.max && keys.length > parseInt(this.max)) { // 组件清理
           pruneCacheEntry(cache, keys[0], keys, this._vnode)
         }
         this.vnodeToCache = null
@@ -87,19 +87,19 @@ export default {
   },
 
   created () {
-    this.cache = Object.create(null)
-    this.keys = []
+    this.cache = Object.create(null) // 缓存列表
+    this.keys = [] // 缓存key列表，缓存组件实例
   },
 
   destroyed () {
     for (const key in this.cache) {
-      pruneCacheEntry(this.cache, key, this.keys)
+      pruneCacheEntry(this.cache, key, this.keys) // keep-alive销毁时删除所有组件
     }
   },
 
-  mounted () {
+  mounted () { // 监控缓存列表
     this.cacheVNode()
-    this.$watch('include', val => {
+    this.$watch('include', val => { // 缓存列表是动态的
       pruneCache(this, name => matches(val, name))
     })
     this.$watch('exclude', val => {
@@ -112,20 +112,20 @@ export default {
   },
 
   render () {
-    const slot = this.$slots.default
-    const vnode: VNode = getFirstComponentChild(slot)
-    const componentOptions: ?VNodeComponentOptions = vnode && vnode.componentOptions
+    const slot = this.$slots.default // 获取默认插槽
+    const vnode: VNode = getFirstComponentChild(slot) // 获取第一个组件孩子
+    const componentOptions: ?VNodeComponentOptions = vnode && vnode.componentOptions // {Ctor, children，tag, name}
     if (componentOptions) {
       // check pattern
       const name: ?string = getComponentName(componentOptions)
       const { include, exclude } = this
-      if (
+      if ( // 获取组件名，看是否需要缓存，不需要缓存则直接返回 vnode
         // not included
         (include && (!name || !matches(include, name))) ||
         // excluded
         (exclude && name && matches(exclude, name))
       ) {
-        return vnode
+        return vnode // 不需要缓存直接返回虚拟节点
       }
 
       const { cache, keys } = this
@@ -133,10 +133,11 @@ export default {
         // same constructor may get registered as different local components
         // so cid alone is not enough (#3269)
         ? componentOptions.Ctor.cid + (componentOptions.tag ? `::${componentOptions.tag}` : '')
-        : vnode.key
-      if (cache[key]) {
+        : vnode.key // 生成缓存key
+      if (cache[key]) { // 如果有key将组件实例直接复用
         vnode.componentInstance = cache[key].componentInstance
         // make current key freshest
+        // 使用LRU算法，取出正在使用的并放在首位，满了清除末尾的
         remove(keys, key)
         keys.push(key)
       } else {
@@ -144,9 +145,10 @@ export default {
         this.vnodeToCache = vnode
         this.keyToCache = key
       }
-
+      // 组件被keep-alive为了防止组件在初始化时重新init
       vnode.data.keepAlive = true
     }
+    // 先渲染当前的组件内容，返回的是虚拟节点，之后会将节点初始化的时候跳过渲染流程，不再执行初始化流程
     return vnode || (slot && slot[0])
   }
 }

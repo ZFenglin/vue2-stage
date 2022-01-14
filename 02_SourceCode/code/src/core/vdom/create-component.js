@@ -38,12 +38,13 @@ const componentVNodeHooks = {
     if (
       vnode.componentInstance &&
       !vnode.componentInstance._isDestroyed &&
-      vnode.data.keepAlive
+      vnode.data.keepAlive // 有keepAlive标签，说明这个组件已经有了
     ) {
       // kept-alive components, treat as a patch
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
+      // 不会调用mounted
       /// 根据组件实例创建vnode
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,

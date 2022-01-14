@@ -289,7 +289,7 @@ export function updateChildComponent (
   // resolve slots + force update if has children
   if (needsForceUpdate) {
     vm.$slots = resolveSlots(renderChildren, parentVnode.context)
-    vm.$forceUpdate()
+    vm.$forceUpdate() // 重新渲染keep-alive
   }
 
   if (process.env.NODE_ENV !== 'production') {
