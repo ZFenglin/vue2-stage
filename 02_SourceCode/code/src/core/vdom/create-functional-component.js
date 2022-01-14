@@ -47,9 +47,9 @@ export function FunctionalRenderContext (
   this.props = props
   this.children = children
   this.parent = parent
-  this.listeners = data.on || emptyObject
+  this.listeners = data.on || emptyObject /// 处理事件
   this.injections = resolveInject(options.inject, parent)
-  this.slots = () => {
+  this.slots = () => { /// 获取插槽函数 this.$slots().default
     if (!this.$slots) {
       normalizeScopedSlots(
         data.scopedSlots,
@@ -100,7 +100,7 @@ export function createFunctionalComponent (
 ): VNode | Array<VNode> | void {
   const options = Ctor.options
   const props = {}
-  const propOptions = options.props
+  const propOptions = options.props /// 获取属性
   if (isDef(propOptions)) {
     for (const key in propOptions) {
       props[key] = validateProp(key, propOptions, propsData || emptyObject)
@@ -110,7 +110,7 @@ export function createFunctionalComponent (
     if (isDef(data.props)) mergeProps(props, data.props)
   }
 
-  const renderContext = new FunctionalRenderContext(
+  const renderContext = new FunctionalRenderContext( /// 创建上下文对象
     data,
     props,
     children,
@@ -120,7 +120,7 @@ export function createFunctionalComponent (
 
   const vnode = options.render.call(null, renderContext._c, renderContext)
 
-  if (vnode instanceof VNode) {
+  if (vnode instanceof VNode) { /// 返回虚拟节点
     return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
   } else if (Array.isArray(vnode)) {
     const vnodes = normalizeChildren(vnode) || []
