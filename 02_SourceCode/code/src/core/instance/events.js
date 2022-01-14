@@ -10,12 +10,12 @@ import {
 import { updateListeners } from '../vdom/helpers/index'
 
 export function initEvents (vm: Component) {
-  vm._events = Object.create(null)
+  vm._events = Object.create(null) // 实现发布订阅属性
   vm._hasHookEvent = false
   // init parent attached events
-  const listeners = vm.$options._parentListeners
+  const listeners = vm.$options._parentListeners // 所有的事件
   if (listeners) {
-    updateComponentListeners(vm, listeners)
+    updateComponentListeners(vm, listeners) // 更新组件的事件
   }
 }
 
@@ -58,6 +58,7 @@ export function eventsMixin (Vue: Class<Component>) {
         vm.$on(event[i], fn)
       }
     } else {
+      // 将绑定的事件存储到vm._events中
       (vm._events[event] || (vm._events[event] = [])).push(fn)
       // optimize hook:event cost by using a boolean flag marked at registration
       // instead of a hash lookup
@@ -129,11 +130,13 @@ export function eventsMixin (Vue: Class<Component>) {
         )
       }
     }
-    let cbs = vm._events[event]
+    let cbs = vm._events[event] // 取出对应的事件
     if (cbs) {
+      // 将回调转化为数组
       cbs = cbs.length > 1 ? toArray(cbs) : cbs
       const args = toArray(arguments, 1)
       const info = `event handler for "${event}"`
+      // 遍历执行回调
       for (let i = 0, l = cbs.length; i < l; i++) {
         invokeWithErrorHandling(cbs[i], vm, args, vm, info)
       }

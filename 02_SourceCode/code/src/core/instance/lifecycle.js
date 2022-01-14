@@ -33,15 +33,16 @@ export function initLifecycle (vm: Component) {
   const options = vm.$options
 
   // locate first non-abstract parent
-  let parent = options.parent
-  if (parent && !options.abstract) {
+  let parent = options.parent // 取出父亲
+  if (parent && !options.abstract) { // 排除抽象组件，查找父亲不是抽象组件
+    // 抽象组件不列入父子关系 keep-alive
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
-    parent.$children.push(vm)
+    parent.$children.push(vm) // 父亲记住当前实例
   }
 
-  vm.$parent = parent
+  vm.$parent = parent // 增加$parents属性 指向父实例
   vm.$root = parent ? parent.$root : vm
 
   vm.$children = []

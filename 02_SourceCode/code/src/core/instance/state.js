@@ -64,19 +64,20 @@ export function initState (vm: Component) {
 
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
-  const props = vm._props = {}
+  const props = vm._props = {} // 组件的属性都放到_props中
   // cache prop keys so that future props updates can iterate using Array
   // instead of dynamic object key enumeration.
   const keys = vm.$options._propKeys = []
   const isRoot = !vm.$parent
   // root instance props should be converted
-  if (!isRoot) { /// 属性传递是从父到子到孙子。只有根节点才会对属性进行定义
+  if (!isRoot) { /// 属性传递是从父到子到孙子。只有根节点才会对属性进行定义响应式
     toggleObserving(false)
   }
   for (const key in propsOptions) {
     keys.push(key)
     const value = validateProp(key, propsOptions, propsData, vm)
     /* istanbul ignore else */
+    // 将父亲传入的属性响应式定义到自己的_props中
     if (process.env.NODE_ENV !== 'production') {
       const hyphenatedKey = hyphenate(key)
       if (isReservedAttribute(hyphenatedKey) ||

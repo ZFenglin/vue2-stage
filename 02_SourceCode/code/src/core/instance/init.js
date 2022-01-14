@@ -29,7 +29,7 @@ export function initMixin (Vue: Class<Component>) {
     // a flag to avoid this being observed
     vm._isVue = true /// 表标识为Vue实例，是不会被观测的
     // merge options
-    if (options && options._isComponent) { /// 如果是组件，则需要对组件的属性 事件
+    if (options && options._isComponent) { /// 如果是组件，则会对组件进行初始化
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
       // internal component options needs special treatment.
@@ -54,7 +54,7 @@ export function initMixin (Vue: Class<Component>) {
     initRender(vm) /// 初始化插槽 _c $attrs $listeners $slots
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props /// inject/provider 隔代传输数据，不建议开发使用，因为值不清楚由谁提供
-    initState(vm)
+    initState(vm) // 处理props和data
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
 
@@ -79,9 +79,9 @@ export function initInternalComponent (vm: Component, options: InternalComponent
   opts._parentVnode = parentVnode
 
   const vnodeComponentOptions = parentVnode.componentOptions
-  opts.propsData = vnodeComponentOptions.propsData
-  opts._parentListeners = vnodeComponentOptions.listeners
-  opts._renderChildren = vnodeComponentOptions.children
+  opts.propsData = vnodeComponentOptions.propsData // 组件属性
+  opts._parentListeners = vnodeComponentOptions.listeners // 组件监听器
+  opts._renderChildren = vnodeComponentOptions.children // 组件子节点
   opts._componentTag = vnodeComponentOptions.tag
 
   if (options.render) {

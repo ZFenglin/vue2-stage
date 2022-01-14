@@ -47,7 +47,7 @@ const componentVNodeHooks = {
       /// 根据组件实例创建vnode
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
-        activeInstance
+        activeInstance // 当前激活的实例传入
       )
       /// 调用组件的_init并且将最终渲染的内容放到vm.$el上
       child.$mount(hydrating ? vnode.elm : undefined, hydrating)
@@ -157,20 +157,20 @@ export function createComponent (
     transformModel(Ctor.options, data)
   }
 
-  // extract props
+  // extract props 处理组件属性
   const propsData = extractPropsFromVNodeData(data, Ctor, tag)
 
   // functional component
-  if (isTrue(Ctor.options.functional)) {
+  if (isTrue(Ctor.options.functional)) { // 函数式组件
     return createFunctionalComponent(Ctor, propsData, data, context, children)
   }
 
   // extract listeners, since these needs to be treated as
   // child component listeners instead of DOM listeners
-  const listeners = data.on
+  const listeners = data.on // 处理组件事件
   // replace with listeners with .native modifier
   // so it gets processed during parent component patch.
-  data.on = data.nativeOn
+  data.on = data.nativeOn // 处理原生事件
 
   if (isTrue(Ctor.options.abstract)) {
     // abstract components do not keep anything
@@ -189,10 +189,10 @@ export function createComponent (
 
   // return a placeholder vnode
   const name = Ctor.options.name || tag
-  const vnode = new VNode(
+  const vnode = new VNode( /// 创建虚拟节点 componentOptions
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
     data, undefined, undefined, undefined, context,
-    { Ctor, propsData, listeners, tag, children },
+    { Ctor, propsData, listeners, tag, children }, /// 包含组件的属性和事件
     asyncFactory
   )
 
@@ -216,7 +216,7 @@ export function createComponentInstanceForVnode (
   const options: InternalComponentOptions = {
     _isComponent: true,
     _parentVnode: vnode,
-    parent
+    parent // 将传入的activeInstance作为父组件
   }
   // check inline-template render functions
   const inlineTemplate = vnode.data.inlineTemplate

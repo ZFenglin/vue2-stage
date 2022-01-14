@@ -22,7 +22,7 @@ export function extractPropsFromVNodeData (
     return
   }
   const res = {}
-  const { attrs, props } = data
+  const { attrs, props } = data /// 去提取data中的props属性
   if (isDef(attrs) || isDef(props)) {
     for (const key in propOptions) {
       const altKey = hyphenate(key)
